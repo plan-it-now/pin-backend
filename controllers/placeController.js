@@ -21,5 +21,35 @@ module.exports = {
         res.json(places);
       }
     })
+  },
+  deletePlace: (req, res) => {
+    Place.findByIdAndRemove(req.params.id, (err, deletedUser) => {
+      if(err) {
+        res.send({error:err});
+      } else {
+        res.send(deletedUser);
+      }
+    })
+  },
+  updatePlace: (req, res) => {
+    Place.findByIdAndUpdate(req.params.id, {
+      name: req.body.name,
+      city: req.body.city,
+      description: req.body.description,
+      tag: req.body.tag,
+      photo: req.body.photo,
+      loc: {
+        latitude: req.body.latitude,
+        longitude: req.body.longitude
+      },
+      detail_url: req.body.url
+    }, {new: true},
+    (err, updatedPlace) => {
+      if(err) {
+        res.send({error:err});
+      } else {
+        res.send(updatedPlace);
+      }
+    })
   }
 };

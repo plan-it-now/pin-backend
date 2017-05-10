@@ -20,9 +20,7 @@ router.put('/', (req,res) => {
   res.send('success update place');
 })
 
-router.delete('/:id', (req,res) => {
-  res.send('succes delete place');
-})
+router.delete('/:id', places.deletePlace)
 
 
 module.exports = router;
