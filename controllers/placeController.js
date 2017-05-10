@@ -12,5 +12,14 @@ module.exports = {
         res.send(results)
       }
     });
+  },
+  getAllPlaces: (req, res) => {
+    Place.find((err,places) => {
+      if(err) {
+        res.json({error:err});
+      } else {
+        res.json(places);
+      }
+    })
   }
 };

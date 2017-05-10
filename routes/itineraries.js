@@ -19,7 +19,7 @@ router.put('/', (req,res) => {
   res.send('success update itinerary');
 })
 
-router.delete('/:id' (req,res) => {
+router.delete('/:id', (req,res) => {
   res.send('succes delete itinerary');
 })
 
