@@ -3,7 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "test": "NODE_ENV=test mocha",
+    "start": "node ./bin/www",
+    "dev": "nodemon ./bin/www"
   },
   "dependencies": {
     "body-parser": "~1.16.0",
@@ -22,6 +24,7 @@
   },
   "devDependencies": {
     "chai": "^3.5.0",
-    "chai-http": "^3.0.0"
+    "chai-http": "^3.0.0",
+    "nodemon": "^1.11.0"
   }
 }

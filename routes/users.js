@@ -20,7 +20,7 @@ router.put('/', (req,res) => {
   res.send('success update user');
 })
 
-router.delete('/:id' (req,res) => {
+router.delete('/:id', (req,res) => {
   res.send('succes delete user');
 })
 

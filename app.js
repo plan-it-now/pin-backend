@@ -30,10 +30,18 @@ app.use('/users', users);
 app.use('/places', places);
 app.use('/itineraries', itineraries);
 
+const db_config = {
+    development:"mogodb://localhost/planitnow",
+    test: "mongodb://localhost/planitnow-test"
+}
+
 // mongoose
-mongoose.connect('mongodb://localhost/planitnow')
-mongoose.connection.on('connected', () => {
-  console.log('monggo connected');
+mongoose.connect(db.config[app.settings.env], (err,res) => {
+  if(err) {
+    console.log('Error connecting to the database. '+err);
+  } else {
+    console.log('connected to Database: '+db_config[app.settings.env]);
+  }
 })
 
 // catch 404 and forward to error handler
