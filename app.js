@@ -8,6 +8,8 @@ var mongoose = require('mongoose');
 
 var index = require('./routes/index');
 var users = require('./routes/users');
+var places = require('./routes/places');
+var itineraries = require('./routes/itineraries');
 
 var app = express();
 
@@ -25,6 +27,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
 app.use('/users', users);
+app.use('/places', places);
+app.use('/itineraries', itineraries);
 
 // mongoose
 mongoose.connect('mongodb://localhost/planitnow')
