@@ -11,7 +11,7 @@ router.get('/:id', itinerary.getItineraryById);
 
 router.post('/', itinerary.postItinerary);
 
-router.put('/', itinerary.updateItinerary);
+router.put('/:id', itinerary.updateItinerary);
 
 router.delete('/:id', itinerary.deleteItinerary);
 

@@ -16,6 +16,7 @@ chai.use(chaiHTTP);
 describe('Itinerary Testing', () => {
   let currentUser;
   let currentPlace;
+  let currentItinerary;
   beforeEach((done) => {
     const newUser = new User({
       name: 'Anthony',
@@ -69,6 +70,7 @@ describe('Itinerary Testing', () => {
           }]
         })
         newItinerary.save((err,itinerary) => {
+          currentItinerary = itinerary;
           done();
         })
       })
@@ -130,33 +132,40 @@ describe('Itinerary Testing', () => {
       }]
     })
 
-    newUser.save((err,user) => {
+    newItinerary.save((err,itinerary) => {
       chai.request(server)
-      .put('/users/'+user._id)
+      .put('/itineraries/'+itinerary._id)
       .send({
-        name: 'Jackie Chen',
+        user: currentUser._id,
+        places: [{
+          place: currentPlace._id,
+          schedule: '12.00-13.00',
+          day: 2,
+          sequence: 3
+        }]
       })
       .end((err,res) => {
+        console.log(res.body);
         res.should.have.status(200);
         res.body.should.be.a('object');
         res.body.should.not.have.property('error');
-        res.body.name.should.equal('Jackie Chen');
+        res.body.places[0].day.should.equal(2);
         done();
       })
     })
 
   })
 
-  // it('should return deleted user', (done) => {
-  //   chai.request(server)
-  //   .delete('/users/'+currentData._id)
-  //   .end((err,res) => {
-  //     res.should.have.status(200);
-  //     res.body.should.be.a('object');
-  //     res.body.email.should.equal('anthony@juan.com');
-  //     done();
-  //   })
-  //
-  // })
+  it('should return deleted itinerary', (done) => {
+    chai.request(server)
+    .delete('/itineraries/'+currentItinerary._id)
+    .end((err,res) => {
+      res.should.have.status(200);
+      res.body.should.be.a('object');
+      res.body.user.toString().should.equal(currentUser._id.toString());
+      done();
+    })
+
+  })
 
 })
