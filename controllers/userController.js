@@ -1,8 +1,26 @@
 'use strict'
 
 const User = require('../models/user');
+const jwt = require('jsonwebtoken');
+const pwh = require('password-hash');
+
+require('dotenv').config();
 
 module.exports = {
+  login: (req, res) => {
+    User.findOne({'email':req.body.email}, (err, user) => {
+      if(err || user == null) {
+        res.send({error:err})
+      } else {
+        if(pwh.verify(req.body.password,user.password)) {
+          const newToken = jwt.sign({email: user.email}, process.env.SECRET_KEY);
+          res.send({token: newToken, id: user._id});
+        } else {
+          res.send({error: 'wrong password'});
+        }
+      }
+    })
+  },
   getAllUsers: (req, res) => {
     User.find((err,users) => {
       if(err) {
