@@ -21,6 +21,38 @@ module.exports = {
       }
     })
   },
+  signup: (req, res) => {
+    User.findOne({email: req.body.email}, (err, user) => {
+      if(err) {
+        res.send({error:err})
+      } else if(user) {
+        res.send({error:'email is already exist'})
+      } else {
+        const newUser = new User({
+          name: req.body.name,
+          email: req.body.email,
+          password: req.body.password,
+          pref: {
+            history: 50,
+            nature: 50,
+            architecture: 50,
+            shopping: 50,
+            art: 50
+          }
+        })
+
+        newUser.save((err, user) => {
+          if(err) {
+            res.send({error: err})
+          } else {
+            const newToken = jwt.sign({email: user.email}, process.env.SECRET_KEY);
+            res.send({token: newToken, id: user._id})
+          }
+        })
+        
+      }
+    })
+  }
   getAllUsers: (req, res) => {
     User.find((err,users) => {
       if(err) {
