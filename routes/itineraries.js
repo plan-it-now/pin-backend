@@ -7,6 +7,8 @@ var itinerary = require('../controllers/itineraryController');
 
 router.get('/', itinerary.getAllItinerary);
 
+router.get('/user/:id', itinerary.getItineraryByUser);
+
 router.get('/:id', itinerary.getItineraryById);
 
 router.post('/', itinerary.postItinerary);
