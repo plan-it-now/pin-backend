@@ -12,17 +12,11 @@ router.get('/:id', (req,res) => {
   res.send({place:'yuhuy'})
 })
 
-router.post('/', (req,res) => {
-  res.send('success post user');
-})
+router.post('/', places.postPlace)
 
-router.put('/', (req,res) => {
-  res.send('success update place');
-})
+router.put('/:id', places.updatePlace )
 
-router.delete('/:id', (req,res) => {
-  res.send('succes delete place');
-})
+router.delete('/:id', places.deletePlace)
 
 
 module.exports = router;
