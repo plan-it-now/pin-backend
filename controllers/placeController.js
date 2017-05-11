@@ -23,7 +23,7 @@ module.exports = {
     })
   },
   getPlacesByCity: (req, res) => {
-    Place.find({city:req.params.city}(err,places) => {
+    Place.find({city:req.params.city}, (err,places) => {
       if(err) {
         res.json({error:err});
       } else {
@@ -32,7 +32,7 @@ module.exports = {
     })
   },
   getPlaceById: (req, res) => {
-    Place.findById({id:req.params.id}(err,places) => {
+    Place.findById({id:req.params.id}, (err,places) => {
       if(err) {
         res.json({error:err});
       } else {
