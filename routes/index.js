@@ -11,5 +11,6 @@ router.get('/', function(req, res, next) {
 
 router.get('/seed-data', place.seedDataPlace);
 router.post('/login', user.login)
+router.post('/signup', user.signup)
 
 module.exports = router;

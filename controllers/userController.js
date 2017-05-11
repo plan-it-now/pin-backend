@@ -49,10 +49,10 @@ module.exports = {
             res.send({token: newToken, id: user._id})
           }
         })
-        
+
       }
     })
-  }
+  },
   getAllUsers: (req, res) => {
     User.find((err,users) => {
       if(err) {

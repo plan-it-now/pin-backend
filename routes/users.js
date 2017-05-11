@@ -2,7 +2,7 @@
 
 var express = require('express');
 var router = express.Router();
-var user = require('../controllers/userControllers');
+var user = require('../controllers/userController');
 /* GET users listing. */
 router.get('/', user.getAllUsers);
 router.get('/:id', (req,res) => {
