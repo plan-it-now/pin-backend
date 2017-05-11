@@ -42,13 +42,35 @@ module.exports = {
         latitude: req.body.latitude,
         longitude: req.body.longitude
       },
-      detail_url: req.body.url
+      detail_url: req.body.detail_url
     }, {new: true},
     (err, updatedPlace) => {
       if(err) {
         res.send({error:err});
       } else {
         res.send(updatedPlace);
+      }
+    })
+  },
+  postPlace: (req, res) => {
+    const newPlace = new Place({
+      name: req.body.name,
+      city: req.body.city,
+      description: req.body.description,
+      tag: req.body.tag,
+      photo: req.body.photo,
+      loc: {
+        latitude: req.body.latitude,
+        longitude: req.body.longitude
+      },
+      detail_url: req.body.detail_url
+    })
+
+    newPlace.save((err, place) => {
+      if(err) {
+        res.send({error:err});
+      } else {
+        res.send(place);
       }
     })
   }
