@@ -27,7 +27,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 const db_config = {
     test: "mongodb://localhost/planitnow-test",
-    development:"mongodb://localhost/planitnow"
+    development:"mongodb://localhost/planitnow",
+    production:"mongodb://localhost/planitnow-fix",
 }
 
 // mongoose
