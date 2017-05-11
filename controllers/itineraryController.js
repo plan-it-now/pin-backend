@@ -12,6 +12,16 @@ module.exports = {
       }
     })
   },
+  getItineraryByUser: (req, res) => {
+    Itinerary.find({user: req.params})
+    .exec((err, itineraries) => {
+      if(err){
+        res.json({error: err});
+      } else {
+        res.json(itineraries);
+      }
+    })
+  },
   getItineraryById: (req, res) => {
     Itinerary.findById(req.params.id, (err,itinerary) => {
       if(err) {

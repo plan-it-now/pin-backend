@@ -28,10 +28,12 @@ module.exports = {
       } else if(user) {
         res.send({error:'email is already exist'})
       } else {
+        const hashedPassword = pwh.generate(req.body.password);
+
         const newUser = new User({
           name: req.body.name,
           email: req.body.email,
-          password: req.body.password,
+          password: hashedPassword,
           pref: {
             history: 50,
             nature: 50,

@@ -6,21 +6,18 @@ const chai = require('chai'),
       // monggo = require('mongoose'),
       should = chai.should(),
       User = require('../models/user'),
-      server = require('../app'),
-      pwh = require('password-hash'),
-      jwt = require('jsonwebtoken')
+      server = require('../app')
 
 chai.use(chaiHTTP);
 
 
 describe('User Testing', () => {
   let currentData;
-  const passUser = '12345';
   beforeEach((done) => {
     const newUser = new User({
       name: 'Anthony',
       email: 'anthony@juan.com',
-      password: pwh.generate(passUser),
+      password: '12345',
       pref: {
         history: 50,
         nature: 50,
@@ -35,7 +32,7 @@ describe('User Testing', () => {
       const newUser2 = new User({
         name: 'Anthony2',
         email: 'anthony2@juan.com',
-        password: pwh.generate(passUser),
+        password: '12345',
         pref: {
           history: 50,
           nature: 50,
@@ -135,82 +132,5 @@ describe('User Testing', () => {
     })
 
   })
-
-  it('login should return token', (done) => {
-    chai.request(server)
-    .post('/login')
-    .send({
-      email: 'anthony@juan.com',
-      password: '12345'
-    })
-    .end((err, res) => {
-      res.should.have.status(200);
-      res.body.should.be.a('object');
-      res.body.should.have.property('token');
-      done();
-    })
-  })
-
-  it('login with wrong email should return error', (done) => {
-    chai.request(server)
-    .post('/login')
-    .send({
-      email: 'anthony666@juan.com',
-      password: '12345'
-    })
-    .end((err, res) => {
-      res.should.have.status(200);
-      res.body.should.be.a('object');
-      res.body.should.have.property('error');
-      done();
-    })
-  })
-
-  it('login with wrong password should return error', (done) => {
-    chai.request(server)
-    .post('/login')
-    .send({
-      email: 'anthony@juan.com',
-      password: '123451111'
-    })
-    .end((err, res) => {
-      res.should.have.status(200);
-      res.body.should.be.a('object');
-      res.body.should.have.property('error');
-      done();
-    })
-  })
-
-  it('signup should return token too', (done) => {
-    chai.request(server)
-    .post('/signup')
-    .send({
-      name: 'Budianto',
-      email: 'budiono@budi.com',
-      password: '12345'
-    })
-    .end((err, res) => {
-      res.should.have.status(200);
-      res.body.should.be.a('object');
-      res.body.should.have.property('token');
-      done();
-    })
-  })
-
-  it('signup with same email, should return error', (done) => {
-    chai.request(server)
-    .post('/signup')
-    .send({
-      name: 'Budianto',
-      email: 'anthony@juan.com',
-      password: '12345'
-    })
-    .end((err, res) => {
-      res.body.should.be.a('object');
-      res.body.should.have.property('error');
-      done();
-    })
-  })
-
 
 })
