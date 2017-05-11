@@ -106,4 +106,16 @@ describe('Place Testing', () => {
     })
   })
 
+  it('should return place by city', (done) => {
+    const city = "Jakarta Selatan"
+    chai.request(server)
+    .get('/places/'+city)
+    .end((err, res) => {
+      res.should.have.status(200);
+      res.body.should.be.a('array');
+      res.body[0].city.should.equal('Jakarta Selatan');
+      done();
+    })
+  })
+
 })

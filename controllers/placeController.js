@@ -22,6 +22,15 @@ module.exports = {
       }
     })
   },
+  searchPlaceByCity: (req, res) => {
+    Place.find({city: req.params.city}, (err, places) => {
+      if(err) {
+        res.send({error: err})
+      } else {
+        res.send(places);
+      }
+    })
+  },
   deletePlace: (req, res) => {
     Place.findByIdAndRemove(req.params.id, (err, deletedUser) => {
       if(err) {

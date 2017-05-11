@@ -8,15 +8,13 @@ var places = require('../controllers/placeController');
 /* GET users listing. */
 router.get('/', places.getAllPlaces);
 
-router.get('/:id', (req,res) => {
-  res.send({place:'yuhuy'})
-})
+router.get('/:city', places.searchPlaceByCity);
 
-router.post('/', places.postPlace)
+router.post('/', places.postPlace);
 
-router.put('/:id', places.updatePlace )
+router.put('/:id', places.updatePlace);
 
-router.delete('/:id', places.deletePlace)
+router.delete('/:id', places.deletePlace);
 
 
 module.exports = router;
