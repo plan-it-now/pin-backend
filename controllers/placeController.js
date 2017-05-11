@@ -32,11 +32,11 @@ module.exports = {
     })
   },
   getPlaceById: (req, res) => {
-    Place.findById({id:req.params.id}, (err,places) => {
+    Place.findById(req.params.id, (err,place) => {
       if(err) {
         res.json({error:err});
       } else {
-        res.json(places);
+        res.json(place);
       }
     })
   },
