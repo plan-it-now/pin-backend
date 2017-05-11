@@ -8,6 +8,8 @@ var mongoose = require('mongoose');
 
 var index = require('./routes/index');
 var users = require('./routes/users');
+var places = require('./routes/places');
+var itineraries = require('./routes/itineraries');
 
 var app = express();
 
@@ -23,14 +25,31 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', index);
-app.use('/users', users);
+const db_config = {
+    test: "mongodb://localhost/planitnow-test",
+    development:"mongodb://localhost/planitnow",
+    production:"mongodb://localhost/planitnow-fix",
+}
 
 // mongoose
-mongoose.connect('mongodb://localhost/planitnow')
-mongoose.connection.on('connected', () => {
-  console.log('monggo connected');
+mongoose.connect(db_config[app.settings.env], (err,res) => {
+  if(err) {
+    console.log('Error connecting to the database. '+err);
+  } else {
+    console.log('connected to Database: '+db_config[app.settings.env]);
+  }
 })
+mongoose.connection.on('connected', () => {
+  console.log('mongo is connected');
+})
+
+
+app.use('/', index);
+app.use('/users', users);
+app.use('/places', places);
+app.use('/itineraries', itineraries);
+
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
