@@ -17,7 +17,8 @@ module.exports = {
       } else {
         if(pwh.verify(req.body.password,user.password)) {
           const newToken = jwt.sign({email: user.email}, process.env.SECRET_KEY);
-          res.send({token: newToken, id: user._id});
+          user.password = null
+          res.send({token: newToken, userdata: user});
         } else {
           res.send({error: 'wrong password'});
         }
@@ -51,7 +52,8 @@ module.exports = {
             res.send({error: err})
           } else {
             const newToken = jwt.sign({email: user.email}, process.env.SECRET_KEY);
-            res.send({token: newToken, id: user._id})
+            user.password = null
+            res.send({token: newToken, userdata: user});
           }
         })
 
