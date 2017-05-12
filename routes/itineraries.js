@@ -1,27 +1,21 @@
+'use strict'
+
 var express = require('express');
 var router = express.Router();
-var express = require('express');
-var router = express.Router();
 
-router.get('/', (req, res) => {
-  res.send([]);
-});
+var itinerary = require('../controllers/itineraryController');
 
-router.get('/:id', (req,res) => {
-  res.send({itinerary:'ahoy'})
-})
+router.get('/', itinerary.getAllItinerary);
 
-router.post('/', (req,res) => {
-  res.send('success post itinerary');
-})
+router.get('/user/:id', itinerary.getItineraryByUser);
 
-router.put('/', (req,res) => {
-  res.send('success update itinerary');
-})
+router.get('/:id', itinerary.getItineraryById);
 
-router.delete('/:id', (req,res) => {
-  res.send('succes delete itinerary');
-})
+router.post('/', itinerary.postItinerary);
+
+router.put('/:id', itinerary.updateItinerary);
+
+router.delete('/:id', itinerary.deleteItinerary);
 
 
 module.exports = router;

@@ -22,6 +22,24 @@ module.exports = {
       }
     })
   },
+  getPlacesByCity: (req, res) => {
+    Place.find({city:req.params.city}, (err,places) => {
+      if(err) {
+        res.json({error:err});
+      } else {
+        res.json(places);
+      }
+    })
+  },
+  getPlaceById: (req, res) => {
+    Place.findById(req.params.id, (err,place) => {
+      if(err) {
+        res.json({error:err});
+      } else {
+        res.json(place);
+      }
+    })
+  },
   deletePlace: (req, res) => {
     Place.findByIdAndRemove(req.params.id, (err, deletedUser) => {
       if(err) {

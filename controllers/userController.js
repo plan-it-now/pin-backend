@@ -9,8 +9,11 @@ require('dotenv').config();
 module.exports = {
   login: (req, res) => {
     User.findOne({'email':req.body.email}, (err, user) => {
-      if(err || user == null) {
+      if(err) {
         res.send({error:err})
+      }
+      else if(!user){
+        res.send({error:"user not found"})
       } else {
         if(pwh.verify(req.body.password,user.password)) {
           const newToken = jwt.sign({email: user.email}, process.env.SECRET_KEY);
@@ -28,10 +31,12 @@ module.exports = {
       } else if(user) {
         res.send({error:'email is already exist'})
       } else {
+        const hashedPassword = pwh.generate(req.body.password);
+
         const newUser = new User({
           name: req.body.name,
           email: req.body.email,
-          password: req.body.password,
+          password: hashedPassword,
           pref: {
             history: 50,
             nature: 50,

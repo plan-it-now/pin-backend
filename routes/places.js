@@ -8,9 +8,9 @@ var places = require('../controllers/placeController');
 /* GET users listing. */
 router.get('/', places.getAllPlaces);
 
-router.get('/:id', (req,res) => {
-  res.send({place:'yuhuy'})
-})
+router.get('/city/:city', places.getPlacesByCity);
+
+router.get('/:id', places.getPlaceById);
 
 router.post('/', places.postPlace)
 
