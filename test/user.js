@@ -5,6 +5,7 @@ const chai = require('chai'),
       chaiHTTP = require('chai-http'),
       // monggo = require('mongoose'),
       should = chai.should(),
+      pwh = require('password-hash'),
       User = require('../models/user'),
       server = require('../app')
 
@@ -17,7 +18,7 @@ describe('User Testing', () => {
     const newUser = new User({
       name: 'Anthony',
       email: 'anthony@juan.com',
-      password: '12345',
+      password: pwh.generate('12345'),
       pref: {
         history: 50,
         nature: 50,
@@ -64,6 +65,53 @@ describe('User Testing', () => {
       done();
     })
   })
+
+  it('should return token after login', (done) => {
+    chai.request(server)
+    .post('/login')
+    .send({
+      email: 'anthony@juan.com',
+      password: '12345'
+    })
+    .end((err,res) => {
+      res.should.have.status(200);
+      res.body.should.be.a('object');
+      res.body.should.have.property('token');
+      done();
+    })
+  })
+
+  it('should return token after signup', (done) => {
+    chai.request(server)
+    .post('/signup')
+    .send({
+      name: 'astutay',
+      email: 'astutay@juan.com',
+      password: '12345'
+    })
+    .end((err,res) => {
+      res.should.have.status(200);
+      res.body.should.be.a('object');
+      res.body.should.have.property('token');
+      done();
+    })
+  })
+
+  it('should return token after login with fesbuk', (done) => {
+    chai.request(server)
+    .post('/login-fb')
+    .send({
+      name: 'astutay',
+      email: 'astutay@juan.com'
+    })
+    .end((err,res) => {
+      res.should.have.status(200);
+      res.body.should.be.a('object');
+      res.body.should.have.property('token');
+      done();
+    })
+  })
+
 
   it('should return user that have been posted', (done) => {
     chai.request(server)

@@ -33,11 +33,44 @@ module.exports = {
         res.send({error:'email is already exist'})
       } else {
         const hashedPassword = pwh.generate(req.body.password);
-
         const newUser = new User({
           name: req.body.name,
           email: req.body.email,
           password: hashedPassword,
+          pref: {
+            history: 50,
+            nature: 50,
+            architecture: 50,
+            shopping: 50,
+            art: 50
+          }
+        })
+
+        newUser.save((err, user) => {
+          if(err) {
+            res.send({error: err})
+          } else {
+            const newToken = jwt.sign({email: user.email}, process.env.SECRET_KEY);
+            user.password = null
+            res.send({token: newToken, userdata: user});
+          }
+        })
+
+      }
+    })
+  },
+  loginFb: (req,res) => {
+    User.findOne({email: req.body.email},(err, user) => {
+      if(err) {
+        res.send({error:err})
+      } else if(user) {
+        const newToken = jwt.sign({email: user.email, name: user.name, pref: user.pref}, process.env.SECRET_KEY);
+        res.send({token: newToken})
+      } else {
+
+        const newUser = new User({
+          name: req.body.name,
+          email: req.body.email,
           pref: {
             history: 50,
             nature: 50,

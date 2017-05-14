@@ -8,9 +8,9 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
 
-
 router.get('/seed-data', place.seedDataPlace);
-router.post('/login', user.login)
-router.post('/signup', user.signup)
+router.post('/login', user.login);
+router.post('/login-fb', user.loginFb);
+router.post('/signup', user.signup);
 
 module.exports = router;
