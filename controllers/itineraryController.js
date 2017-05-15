@@ -13,7 +13,8 @@ module.exports = {
     })
   },
   getItineraryByUser: (req, res) => {
-    Itinerary.find({user: req.params})
+    Itinerary.find({user: req.params.id})
+    .populate('places.place')
     .exec((err, itineraries) => {
       if(err){
         res.json({error: err});
