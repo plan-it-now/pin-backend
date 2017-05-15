@@ -48,7 +48,7 @@ describe('Place Testing', () => {
     })
   })
 
-  it('should return the new posted user', (done) => {
+  it('should return the new posted place', (done) => {
     chai.request(server)
     .post('/places')
     .send({
@@ -65,6 +65,29 @@ describe('Place Testing', () => {
       res.should.have.status(200);
       res.body.should.be.a('object');
       res.body.should.not.have.property('error');
+      res.body.name.should.equal('Hacktiv888');
+      res.body.loc.longitude.should.equal(101);
+      done();
+    })
+  })
+
+  it('should not create new place with no name defined', (done) => {
+    chai.request(server)
+    .post('/places')
+    .send({
+      city: 'Jakarta Selatan',
+      description: 'sebuah tempat wisata yang permai',
+      tag: 'Art',
+      photo: 'foto gedung hacktiv',
+      latitude: 6,
+      longitude: 101,
+      detail_url: 'detail url'
+    })
+    .end((err,res) => {
+      console.log(res.body);
+      res.should.have.status(200);
+      res.body.should.be.a('object');
+      res.body.should.have.property('error');
       res.body.name.should.equal('Hacktiv888');
       res.body.loc.longitude.should.equal(101);
       done();
