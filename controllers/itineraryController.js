@@ -1,6 +1,16 @@
 'use strict'
 
 const Itinerary = require('../models/itinerary');
+const nodemail = require('nodemailer');
+require('dotenv').config();
+
+let transporter = nodemail.createTransport({
+    service: 'gmail',
+    auth: {
+      user: 'bootcamp8.project@gmail.com',
+      password: process.env.PASSWORD
+    }
+});
 
 module.exports = {
   getAllItinerary: (req, res) => {
@@ -42,7 +52,22 @@ module.exports = {
       if(err) {
         res.send({error:err})
       } else {
-        res.send(itinerary);
+        let mailOptions = {
+          from: '"Plan It Now" <bootcamp8.project@gmail.com>',
+          to: 'anthonyjuan95@gmail.com',
+          subject: 'test bro',
+          text: 'waddup',
+          html: '<h1>Wassup</h1>'
+        };
+
+        transporter.sendMail(mailOptions, (err, info) => {
+          if(err) {
+            return console.log(err);
+          } else {
+            console.log('email sent!');
+            res.send(itinerary);
+          }
+        })
       }
     })
   },
