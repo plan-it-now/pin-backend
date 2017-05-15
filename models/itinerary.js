@@ -9,7 +9,7 @@ const itinerarySchema = new Schema({
     place: {type: Schema.Types.ObjectId, ref: 'Place'},
     schedule: String,
     day: Number,
-    sequence: Number
+    orderIndex: Number
   }]
 }, {
   timestamps: true
