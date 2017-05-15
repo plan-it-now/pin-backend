@@ -99,6 +99,18 @@ describe('Itinerary Testing', () => {
     })
   })
 
+  it('should return all itineraries user', (done) => {
+    chai.request(server)
+    .get('/itineraries/user/'+currentUser._id)
+    .end((err,res) => {
+      // console.log('===',res.body[0].places[0].place);
+      res.should.have.status(200);
+      res.body.should.be.a('array');
+      res.body.length.should.equal(1);
+      done();
+    })
+  })
+
   it('should return itinerary that have been posted', (done) => {
     chai.request(server)
     .post('/itineraries')
@@ -145,7 +157,7 @@ describe('Itinerary Testing', () => {
         }]
       })
       .end((err,res) => {
-        console.log(res.body);
+        // console.log(res.body);
         res.should.have.status(200);
         res.body.should.be.a('object');
         res.body.should.not.have.property('error');
