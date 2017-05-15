@@ -153,14 +153,34 @@ describe('User Testing', () => {
       }
     })
     .end((err,res) => {
-      console.log(res.body);
       res.should.have.status(200);
       res.body.should.be.a('object');
       res.body.should.have.property('error');
-      res.body.name.should.equal('Anthony juan');
-      res.body.email.should.equal('anthony666@juan.com');
       done();
     })
+})
+
+it('should not create new user if email is empty', (done) => {
+  chai.request(server)
+  .post('/users')
+  .send({
+    name: 'Anthony juan',
+    password: '12345',
+    pref: {
+      history: 50,
+      nature: 50,
+      architecture: 50,
+      shopping: 50,
+      art: 50
+    }
+  })
+  .end((err,res) => {
+    console.log(res.body);
+    res.should.have.status(200);
+    res.body.should.be.a('object');
+    res.body.should.have.property('error');
+    done();
+  })
 })
 
   it('should return updated user', (done) => {

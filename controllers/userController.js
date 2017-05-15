@@ -125,19 +125,21 @@ module.exports = {
     })
   },
   updateUser: (req, res) => {
-    User.findByIdAndUpdate(req.params.id, {
-      name: req.body.name,
-      email: req.body.email,
-      password: req.body.password,
-      pref: req.body.pref
-    }, {new: true},
-    (err, updatedUser) => {
-      if(err) {
-        res.send({error:err});
-      } else {
-        res.send(updatedUser);
-      }
+    User.findById(req.params.id, function (err, user) {
+      user.name = req.body.name || user.name;
+      user.email = req.body.email || user.email;
+      user.password = req.body.password || user.password;
+      user.pref = req.body.pref || user.pref;
+
+      user.save((err,updatedUser) => {
+        if(err) {
+          res.send({error:err});
+        } else {
+          res.send(updatedUser);
+        }
+      })
     })
+
   },
   deleteUser: (req, res) => {
     User.findByIdAndRemove(req.params.id, (err, deletedUser) => {
