@@ -13,7 +13,7 @@ const placeSchema = new Schema({
     latitude: Number,
     longitude: Number
   },
-  detail_url: {type: String, required: true}
+  details_url: {type: String, required: true}
 },{
   timestamps: true
 });

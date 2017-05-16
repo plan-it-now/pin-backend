@@ -20,7 +20,7 @@ describe('Itinerary Testing', () => {
   beforeEach((done) => {
     const newUser = new User({
       name: 'Anthony',
-      email: 'anthony@juan.com',
+      email: 'anthonyjuan95@gmail.com',
       password: '12345',
       pref: {
         history: 50,
@@ -61,7 +61,7 @@ describe('Itinerary Testing', () => {
         currentPlace = place;
 
         const newItinerary = new Itinerary({
-          user: user._id,
+          user: user,
           places: [{
             place: place._id,
             schedule: '09.00-11.00',
@@ -111,11 +111,13 @@ describe('Itinerary Testing', () => {
     })
   })
 
-  it('should return itinerary that have been posted', (done) => {
+  it('should return itinerary that have been posted and send email', function(done) {
+    this.timeout(10000);
     chai.request(server)
     .post('/itineraries')
     .send({
-      user: currentUser._id,
+      user: currentUser,
+      days: 2,
       places: [{
         place: currentPlace._id,
         schedule: '11.00-12.00',
@@ -136,6 +138,7 @@ describe('Itinerary Testing', () => {
   it('should return updated itinerary', (done) => {
     const newItinerary = new Itinerary({
       user: currentUser._id,
+      days: 2,
       places: [{
         place: currentPlace._id,
         schedule: '11.00-12.00',
@@ -148,7 +151,8 @@ describe('Itinerary Testing', () => {
       chai.request(server)
       .put('/itineraries/'+itinerary._id)
       .send({
-        user: currentUser._id,
+        user: currentUser,
+        days: 2,
         places: [{
           place: currentPlace._id,
           schedule: '12.00-13.00',
@@ -179,5 +183,6 @@ describe('Itinerary Testing', () => {
     })
 
   })
+
 
 })

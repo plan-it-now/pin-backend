@@ -10,12 +10,13 @@ let transporter = nodemail.createTransport({
     port: 587, // port for secure SMTP
     auth: {
       user: 'planitnow@outlook.com',
-      pass: 'Testing123'
+      pass: process.env.PASSWORD
     },
     tls: {
         ciphers:'SSLv3'
     }
 });
+
 
 module.exports = {
   getAllItinerary: (req, res) => {
@@ -39,7 +40,9 @@ module.exports = {
     })
   },
   getItineraryById: (req, res) => {
-    Itinerary.findById(req.params.id, (err,itinerary) => {
+    Itinerary.findById(req.params.id)
+    .populate('places.place')
+    .exec((err,itinerary) => {
       if(err) {
         res.json({error:err});
       } else {
@@ -49,7 +52,7 @@ module.exports = {
   },
   postItinerary: (req, res) => {
     const newItinerary = new Itinerary({
-      user: req.body.user,
+      user: req.body.user._id,
       days: req.body.days,
       places: req.body.places,
     })
@@ -58,20 +61,89 @@ module.exports = {
       if(err) {
         res.send({error:err})
       } else {
-        let mailOptions = {
-          from: '"Plan It Now" <planitnow@outlook.com>',
-          to: 'anthonyjuan95@gmail.com',
-          subject: 'test bro',
-          text: 'waddup',
-          html: '<h1>Wassup</h1>'
-        };
-
-        transporter.sendMail(mailOptions, (err, info) => {
+        Itinerary.findOne({_id: itinerary._id})
+        .populate('places.place')
+        .exec((err, itinerary) => {
           if(err) {
-            return console.log(err);
+            res.send({error: err})
           } else {
-            console.log('email sent!');
-            res.send(itinerary);
+            const orderedPlaces = [];
+            let htmlCanggih = '';
+
+            for(let i = 1; i <= itinerary.days; i++) {
+              orderedPlaces.push(itinerary.places.filter(place => place.day == i))
+            }
+
+            orderedPlaces.map((places,idx) => {
+              let trForPlace = '';
+              places.map((x,idx) => {
+                trForPlace += `
+                  <tr>
+                    <td>${idx+1}</td>
+                    <td>${x.schedule}</td>
+                    <td>${x.place.name}</td>
+                    <td> <a href=${x.place.details_url}>Detail</a> </td>
+                  </tr>
+                `
+              })
+              htmlCanggih += `
+                <h1>Day ${idx+1}</h1>
+                <table>
+                  <tr>
+                    <th>No</th>
+                    <th>Schedule</th>
+                    <th>Place</th>
+                    <th>URL</th>
+                  </tr>
+                  ${trForPlace}
+                </table>
+              `
+            })
+            const htmlFinal = `
+            <html>
+            <head>
+            <style>
+            table {
+              border-collapse: collapse;
+              width: 100%;
+            }
+
+            th, td {
+              text-align: left;
+              padding: 8px;
+            }
+
+            tr:nth-child(even){background-color: #f2f2f2}
+
+            th {
+              background-color: #5E35B1;
+              color: white;
+            }
+            </style>
+            </head>
+            <body>
+
+            <h2>Plan It Now ! Trip To ${orderedPlaces[0][0].place.city}</h2>
+            ${htmlCanggih}
+            </body>
+            </html>
+            `
+
+            let mailOptions = {
+              from: '"Plan It Now" <anthonyjuanchristian@gmail.com>',
+              to: req.body.user.email,
+              subject: 'test bro',
+              text: 'waddup',
+              html: htmlFinal
+            };
+            transporter.sendMail(mailOptions, (err, info) => {
+              if(err) {
+                res.send({error: err})
+              } else {
+                console.log('email sent!');
+                res.send(itinerary);
+              }
+            })
           }
         })
       }
@@ -79,7 +151,7 @@ module.exports = {
   },
   updateItinerary: (req, res) => {
     Itinerary.findByIdAndUpdate(req.params.id, {
-      user: req.body.user,
+      user: req.body.user._id,
       days: req.body.days,
       places: req.body.places,
     }, {new: true},
