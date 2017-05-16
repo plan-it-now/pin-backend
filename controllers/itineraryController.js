@@ -4,11 +4,11 @@ const Itinerary = require('../models/itinerary');
 const nodemail = require('nodemailer');
 require('dotenv').config();
 
-let transporter = nodemail.createTransport({
-    service: 'gmail',
+let transporter = nodemail.createTransport("SMTP", {
+    service: 'hotmail',
     auth: {
-      user: 'arfanizar.fth@gmail.com',
-      pass: 'ifanslank16121993kuningan'
+      user: 'planitnow@outlook.com',
+      pass: 'Testing123'
     }
 });
 
@@ -54,7 +54,7 @@ module.exports = {
         res.send({error:err})
       } else {
         let mailOptions = {
-          from: '"Plan It Now" <arfanizar.fth@gmail.com>',
+          from: '"Plan It Now" <planitnow@outlook.com>',
           to: 'anthonyjuan95@gmail.com',
           subject: 'test bro',
           text: 'waddup',
