@@ -7,8 +7,8 @@ require('dotenv').config();
 let transporter = nodemail.createTransport({
     service: 'gmail',
     auth: {
-      user: 'bootcamp8.project@gmail.com',
-      pass: process.env.PASSWORD
+      user: 'arfanizar.fth@gmail.com',
+      pass: 'ifanslank16121993kuningan'
     }
 });
 
@@ -54,7 +54,7 @@ module.exports = {
         res.send({error:err})
       } else {
         let mailOptions = {
-          from: '"Plan It Now" <bootcamp8.project@gmail.com>',
+          from: '"Plan It Now" <arfanizar.fth@gmail.com>',
           to: 'anthonyjuan95@gmail.com',
           subject: 'test bro',
           text: 'waddup',
