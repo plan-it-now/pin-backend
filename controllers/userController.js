@@ -149,5 +149,30 @@ module.exports = {
         res.send(deletedUser);
       }
     })
+  },
+  getUserById: (req, res) => {
+    User.findById(req.params.id, function(err, user) {
+      if(err) {
+        res.send({error: err});
+      } else {
+        res.send(user)
+      }
+    })
+  },
+  decodedUser: (req, res) => {
+    jwt.verify(req.headers.token, process.env.SECRET_KEY, (err, decoded) => {
+      if(decoded) {
+        User.findOne({email: decoded.email}, (err, user) => {
+          if(err || user == null) {
+            res.send({error:err});
+          } else {
+            user.password = null
+            res.send(user);
+          }
+        })
+      } else {
+        res.send({error:err});
+      }
+    })
   }
 };
