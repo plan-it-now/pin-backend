@@ -5,6 +5,7 @@ const Schema = mongoose.Schema;
 
 const itinerarySchema = new Schema({
   user: {type: Schema.Types.ObjectId, ref: 'User'},
+  days: Number,
   places: [{
     place: {type: Schema.Types.ObjectId, ref: 'Place'},
     schedule: String,

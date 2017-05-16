@@ -8,7 +8,7 @@ let transporter = nodemail.createTransport({
     service: 'gmail',
     auth: {
       user: 'bootcamp8.project@gmail.com',
-      password: process.env.PASSWORD
+      pass: process.env.PASSWORD
     }
 });
 
@@ -45,7 +45,8 @@ module.exports = {
   postItinerary: (req, res) => {
     const newItinerary = new Itinerary({
       user: req.body.user,
-      places: req.body.places
+      days: req.body.days,
+      places: req.body.places,
     })
 
     newItinerary.save((err, itinerary) => {
@@ -74,7 +75,8 @@ module.exports = {
   updateItinerary: (req, res) => {
     Itinerary.findByIdAndUpdate(req.params.id, {
       user: req.body.user,
-      places: req.body.places
+      days: req.body.days,
+      places: req.body.places,
     }, {new: true},
     (err, updatedItinerary) => {
       if(err) {
