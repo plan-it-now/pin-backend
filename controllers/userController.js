@@ -64,7 +64,7 @@ module.exports = {
       if(err) {
         res.send({error:err})
       } else if(user) {
-        const newToken = jwt.sign({email: user.email, name: user.name, pref: user.pref}, process.env.SECRET_KEY);
+        const newToken = jwt.sign({_id: user._id, email: user.email, name: user.name, pref: user.pref}, process.env.SECRET_KEY);
         res.send({token: newToken})
       } else {
 
@@ -84,7 +84,7 @@ module.exports = {
           if(err) {
             res.send({error: err})
           } else {
-            const newToken = jwt.sign({email: user.email}, process.env.SECRET_KEY);
+            const newToken = jwt.sign({_id: user._id, email: user.email, name: user.name, pref: user.pref}, process.env.SECRET_KEY);
             user.password = null
             res.send({token: newToken, userdata: user});
           }
