@@ -4,11 +4,16 @@ const Itinerary = require('../models/itinerary');
 const nodemail = require('nodemailer');
 require('dotenv').config();
 
-let transporter = nodemail.createTransport("SMTP", {
-    service: 'hotmail',
+let transporter = nodemail.createTransport({
+    host: "smtp-mail.outlook.com", // hostname
+    secureConnection: false, // TLS requires secureConnection to be false
+    port: 587, // port for secure SMTP
     auth: {
       user: 'planitnow@outlook.com',
       pass: 'Testing123'
+    },
+    tls: {
+        ciphers:'SSLv3'
     }
 });
 
