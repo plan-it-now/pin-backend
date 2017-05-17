@@ -28,8 +28,8 @@ app.use(cors());
 
 const db_config = {
     test: "mongodb://localhost/planitnow-test",
-    development:"mongodb://localhost/planitnow",
-    production:"mongodb://localhost/planitnow-fix",
+    development:"mongodb://planitnow:planitnow123@planitnow-shard-00-00-ui5d8.mongodb.net:27017,planitnow-shard-00-01-ui5d8.mongodb.net:27017,planitnow-shard-00-02-ui5d8.mongodb.net:27017/planitnow-dev?ssl=true&replicaSet=planitnow-shard-0&authSource=admin",
+    production:"mongodb://planitnow:planitnow123@planitnow-shard-00-00-ui5d8.mongodb.net:27017,planitnow-shard-00-01-ui5d8.mongodb.net:27017,planitnow-shard-00-02-ui5d8.mongodb.net:27017/planitnow-prod?ssl=true&replicaSet=planitnow-shard-0&authSource=admin",
 }
 
 // mongoose
