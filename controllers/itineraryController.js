@@ -34,7 +34,7 @@ module.exports = {
     .populate('places.place')
     .exec((err, itineraries) => {
       if(err){
-        res.json({error: err});
+        res.status(400).json({error: err});
       } else {
         res.json(itineraries);
       }
@@ -153,18 +153,24 @@ module.exports = {
     })
   },
   updateItinerary: (req, res) => {
-    Itinerary.findByIdAndUpdate(req.params.id, {
-      user: req.body.user._id,
-      days: req.body.days,
-      places: req.body.places,
-    }, {new: true},
-    (err, updatedItinerary) => {
-      if(err) {
-        res.send({error:err});
+    Itinerary.findById(req.params.id, (err,itinerary) => {
+      if (err) {
+        res.send({error:err})
       } else {
-        res.send(updatedItinerary);
+        itinerary.user = req.body.user._id || itinerary.user;
+        itinerary.days = req.body.days || itinerary.days;
+        itinerary.places = req.body.places || itinerary.places;
+
+        itinerary.save((err, updatedItinerary) => {
+          if(err) {
+            res.send({error:err});
+          } else {
+            res.send(updatedItinerary);
+          }
+        })
       }
     })
+
   },
   deleteItinerary: (req, res) => {
     Itinerary.findByIdAndRemove(req.params.id, (err, deletedItinerary) => {

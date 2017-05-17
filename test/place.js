@@ -210,7 +210,7 @@ describe('Place Testing', () => {
     })
   })
 
-  it('should return updated user', (done) => {
+  it('should return updated place', (done) => {
     chai.request(server)
     .put('/places/'+currentData._id)
     .send({
@@ -232,5 +232,179 @@ describe('Place Testing', () => {
       done();
     })
   })
+
+  it('should not updated place if name is empty', (done)  => {
+    chai.request(server)
+    .put('/places/'+currentData._id)
+    .send({
+      name: '',
+      city: 'Jakarta Selatan',
+      description: 'sebuah tempat wisata yang permai',
+      tag: 'Art',
+      photo: 'foto gedung hacktiv',
+      latitude: 6,
+      longitude: 101,
+      details_url: 'detail url'
+    })
+    .end((err,res) => {
+      
+      res.should.have.status(200);
+      res.body.should.be.a('object');
+      res.body.name.should.equal('Hacktiv8');
+      done();
+    })
+  })
+
+    it('should not updated place if city is empty', (done)  => {
+      chai.request(server)
+      .put('/places/'+currentData._id)
+      .send({
+        name: 'Hacktiv8',
+        city: '',
+        description: 'sebuah tempat wisata yang permai',
+        tag: 'Art',
+        photo: 'foto gedung hacktiv',
+        latitude: 6,
+        longitude: 101,
+        details_url: 'detail url'
+      })
+      .end((err,res) => {
+
+        res.should.have.status(200);
+        res.body.should.be.a('object');
+        res.body.city.should.equal('Jakarta Selatan');
+        done();
+      })
+    })
+
+    it('should not updated place if description is empty', (done)  => {
+      chai.request(server)
+      .put('/places/'+currentData._id)
+      .send({
+        name: 'Hacktiv8',
+        city: 'Jakarta Selatan',
+        description: '',
+        tag: 'Art',
+        photo: 'foto gedung hacktiv',
+        latitude: 6,
+        longitude: 101,
+        details_url: 'detail url'
+      })
+      .end((err,res) => {
+
+        res.should.have.status(200);
+        res.body.should.be.a('object');
+        res.body.description.should.equal('sebuah tempat wisata yang permai');
+        done();
+      })
+    })
+
+    it('should not updated place if tag is empty', (done)  => {
+      chai.request(server)
+      .put('/places/'+currentData._id)
+      .send({
+        name: 'Hacktiv8',
+        city: 'Jakarta Selatan',
+        description: 'sebuah tempat wisata yang permai',
+        tag: '',
+        photo: 'foto gedung hacktiv',
+        latitude: 6,
+        longitude: 101,
+        details_url: 'detail url'
+      })
+      .end((err,res) => {
+
+        res.should.have.status(200);
+        res.body.should.be.a('object');
+        res.body.tag.should.equal('Art');
+        done();
+      })
+    })
+
+    it('should not updated place if photo is empty', (done)  => {
+      chai.request(server)
+      .put('/places/'+currentData._id)
+      .send({
+        name: 'Hacktiv8',
+        city: 'Jakarta Selatan',
+        description: 'sebuah tempat wisata yang permai',
+        tag: 'Art',
+        photo: '',
+        latitude: 6,
+        longitude: 101,
+        details_url: 'detail url'
+      })
+      .end((err,res) => {
+
+        res.should.have.status(200);
+        res.body.should.be.a('object');
+        res.body.photo.should.equal('foto gedung hacktiv');
+        done();
+      })
+    })
+
+    it('should not updated place if latitude is empty', (done)  => {
+      chai.request(server)
+      .put('/places/'+currentData._id)
+      .send({
+        name: 'Hacktiv8',
+        city: 'Jakarta Selatan',
+        description: 'sebuah tempat wisata yang permai',
+        tag: 'Art',
+        photo: 'foto gedung hacktiv',
+        longitude: 101,
+        details_url: 'detail url'
+      })
+      .end((err,res) => {
+
+        res.should.have.status(200);
+        res.body.should.be.a('object');
+        res.body.loc.latitude.should.equal(6);
+        done();
+      })
+    })
+
+    it('should not updated place if longitude is empty', (done)  => {
+      chai.request(server)
+      .put('/places/'+currentData._id)
+      .send({
+        name: 'Hacktiv8',
+        city: 'Jakarta Selatan',
+        description: 'sebuah tempat wisata yang permai',
+        tag: 'Art',
+        photo: 'foto gedung hacktiv',
+        latitude: 6,
+        details_url: 'detail url'
+      })
+      .end((err,res) => {
+
+        res.should.have.status(200);
+        res.body.should.be.a('object');
+        res.body.loc.longitude.should.equal(101);
+        done();
+      })
+    })
+
+    it('should not updated place if details_url is empty', (done)  => {
+      chai.request(server)
+      .put('/places/'+currentData._id)
+      .send({
+        name: 'Hacktiv8',
+        city: 'Jakarta Selatan',
+        description: 'sebuah tempat wisata yang permai',
+        tag: 'Art',
+        photo: 'foto gedung hacktiv',
+        latitude: 6,
+        longitude: 101,
+        details_url: ''
+      })
+      .end((err,res) => {
+
+        res.should.have.status(200);
+        res.body.should.be.a('object');
+        res.body.details_url.should.equal('detail url');
+        done();
+      })
+    })
 
 })

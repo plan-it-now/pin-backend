@@ -144,6 +144,37 @@ describe('User Testing', () => {
     })
   })
 
+  it('should return error if email is not filled', (done) => {
+    chai.request(server)
+    .post('/signup')
+    .send({
+      name:'mantab soul',
+      password: '11111'
+    })
+    .end((err,res) => {
+      res.should.have.status(200);
+      res.body.should.be.a('object');
+      res.body.should.have.property('error')
+      done();
+    })
+  })
+
+  it('should return error if email is not filled', (done) => {
+    chai.request(server)
+    .post('/signup')
+    .send({
+      email:'budioono@juan.com',
+      password: '11111'
+    })
+    .end((err,res) => {
+      res.should.have.status(200);
+      res.body.should.be.a('object');
+      res.body.should.have.property('error')
+      done();
+    })
+  })
+
+
   it('should return token after login with fesbuk', (done) => {
     chai.request(server)
     .post('/login-fb')
