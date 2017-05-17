@@ -126,18 +126,22 @@ module.exports = {
   },
   updateUser: (req, res) => {
     User.findById(req.params.id, function (err, user) {
-      user.name = req.body.name || user.name;
-      user.email = req.body.email || user.email;
-      user.password = req.body.password || user.password;
-      user.pref = req.body.pref || user.pref;
+      if(err) {
+        res.send({error:err})
+      } else {
+        user.name = req.body.name || user.name;
+        user.email = req.body.email || user.email;
+        user.password = req.body.password || user.password;
+        user.pref = req.body.pref || user.pref;
 
-      user.save((err,updatedUser) => {
-        if(err) {
-          res.send({error:err});
-        } else {
-          res.send(updatedUser);
-        }
-      })
+        user.save((err,updatedUser) => {
+          if(err) {
+            res.send({error:err});
+          } else {
+            res.send(updatedUser);
+          }
+        })
+      }
     })
 
   },
@@ -163,11 +167,13 @@ module.exports = {
     jwt.verify(req.headers.token, process.env.SECRET_KEY, (err, decoded) => {
       if(decoded) {
         User.findOne({email: decoded.email}, (err, user) => {
-          if(err || user == null) {
+          if(err) {
             res.send({error:err});
-          } else {
+          } else if(user) {
             user.password = null
             res.send(user);
+          } else {
+            res.send({error: 'user not found'})
           }
         })
       } else {

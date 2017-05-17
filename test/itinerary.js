@@ -173,6 +173,110 @@ describe('Itinerary Testing', () => {
 
   })
 
+  it('should not update itinerary if user is not filled', (done) => {
+    const newItinerary = new Itinerary({
+      user: currentUser._id,
+      days: 2,
+      places: [{
+        place: currentPlace._id,
+        schedule: '11.00-12.00',
+        day: 1,
+        sequence: 2
+      }]
+    })
+
+    newItinerary.save((err,itinerary) => {
+      chai.request(server)
+      .put('/itineraries/'+itinerary._id)
+      .send({
+        user: '',
+        days: 2,
+        places: [{
+          place: currentPlace._id,
+          schedule: '12.00-13.00',
+          day: 2,
+          sequence: 3
+        }]
+      })
+      .end((err,res) => {
+        // console.log(res.body);
+        res.should.have.status(200);
+        res.body.should.be.a('object');
+        res.body.should.not.have.property('error');
+        res.body.user.should.equal(currentUser._id.toString());
+        done();
+      })
+    })
+
+  })
+
+  it('should not update itinerary if days is not filled', (done) => {
+    const newItinerary = new Itinerary({
+      user: currentUser._id,
+      days: 2,
+      places: [{
+        place: currentPlace._id,
+        schedule: '11.00-12.00',
+        day: 1,
+        sequence: 2
+      }]
+    })
+
+    newItinerary.save((err,itinerary) => {
+      chai.request(server)
+      .put('/itineraries/'+itinerary._id)
+      .send({
+        user: currentUser._id,
+        places: [{
+          place: currentPlace._id,
+          schedule: '12.00-13.00',
+          day: 2,
+          sequence: 3
+        }]
+      })
+      .end((err,res) => {
+        // console.log(res.body);
+        res.should.have.status(200);
+        res.body.should.be.a('object');
+        res.body.should.not.have.property('error');
+        res.body.days.should.equal(2);
+        done();
+      })
+    })
+
+  })
+
+  it('should not update itinerary if places is not filled', (done) => {
+    const newItinerary = new Itinerary({
+      user: currentUser._id,
+      days: 2,
+      places: [{
+        place: currentPlace._id,
+        schedule: '11.00-12.00',
+        day: 1,
+        sequence: 2
+      }]
+    })
+
+    newItinerary.save((err,itinerary) => {
+      chai.request(server)
+      .put('/itineraries/'+itinerary._id)
+      .send({
+        user: currentUser._id,
+        days: 2
+      })
+      .end((err,res) => {
+        // console.log(res.body);
+        res.should.have.status(200);
+        res.body.should.be.a('object');
+        res.body.should.not.have.property('error');
+        res.body.places[0].day.should.equal(1);
+        done();
+      })
+    })
+
+  })
+
   it('should return deleted itinerary', (done) => {
     chai.request(server)
     .delete('/itineraries/'+currentItinerary._id)

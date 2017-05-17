@@ -1,0 +1,18 @@
+language: node_js
+node_js:
+- '7'
+before_install:
+- npm install -g mocha
+services:
+- mongodb
+deploy:
+  provider: elasticbeanstalk
+  access_key_id: AKIAJM7WYTDME3KZNO6Q
+  secret_access_key:
+    secure: I1mjD8+w42f/ar5CFVSQP+mhQsfjN49OoaU7D7VKMYS2SUmUB7lKeN3ohBemwu76tQqDoVpwpqRFdnOtTZ3c67+vl2uhn+52c/vg9wdb4M9/SjW19eE7GxXjFnmQIOMsPgqetuWg206F1yDobQjNkM1SlIruhp49T1IHpKCZBI7TNKVpJMrzoiqNGxKcUZy3tMyhdQQubJV5I0iXt99CIb4gsCLYMGYvFEzD26cuUGkFGuqQb+2Vg/6RsQCtGrysYneA+l/cAYmUB3SiHGg1cG2ok99XEcoM++v3QviWQ3ppEhhpNK6bSszWuKpxdF5TEcqyCt2O7734ssmV3sFe0CLAVaBIwBKLAMdsiljgOnGed3dH0KskAGcmpRJllOpvmjhLUxd6RwUPx+6WyKEc2juLdEcQQddaHs1BJqItNsbQ/nF/KUdIPIBaMIfeBe3xKqJJeBN57rUEo3hznviVtL2o0ApJpfAWPfIq0nNaKQ4VcealXbW+bjd9EbA1jlh0/LPwGePr1FDZnNvQNNhbnI7eccKibQ9vP6SPGQ/Duqxt1CDQwVV1SXupIPhsdJF7dGFWOlsg34iV402Cv6obc2eLjS/dZnGozRvFxVbvBgUh0cadXMFo6vOcLYTYDzIgCTEaXzHAlmIU5VcYdtF0PbzxaQmTaqYWSAxVGIMBiXU=
+  region: ap-southeast-1
+  app: plan-it-now
+  env: plan-it-now-prod
+  bucket_name: elasticbeanstalk-ap-southeast-1-363379739415  
+  on:
+    repo: plan-it-now/pin-backend

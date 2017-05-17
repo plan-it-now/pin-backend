@@ -50,23 +50,25 @@ module.exports = {
     })
   },
   updatePlace: (req, res) => {
-    Place.findByIdAndUpdate(req.params.id, {
-      name: req.body.name,
-      city: req.body.city,
-      description: req.body.description,
-      tag: req.body.tag,
-      photo: req.body.photo,
-      loc: {
-        latitude: req.body.latitude,
-        longitude: req.body.longitude
-      },
-      details_url: req.body.details_url
-    }, {new: true},
-    (err, updatedPlace) => {
+    Place.findById(req.params.id, (err, place) => {
       if(err) {
-        res.send({error:err});
+        res.send({error:err})
       } else {
-        res.send(updatedPlace);
+        place.name = req.body.name || place.name;
+        place.city = req.body.city || place.city;
+        place.description = req.body.description || place.description;
+        place.tag = req.body.tag || place.tag;
+        place.photo = req.body.photo || place.photo;
+        place.loc.latitude = req.body.latitude || place.loc.latitude;
+        place.loc.longitude = req.body.longitude || place.loc.longitude;
+
+        place.save((err, updatedPlace) => {
+          if(err) {
+            res.send({error:err});
+          } else {
+            res.send(updatedPlace);
+          }
+        })
       }
     })
   },

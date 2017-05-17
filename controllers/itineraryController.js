@@ -34,7 +34,7 @@ module.exports = {
     .populate('places.place')
     .exec((err, itineraries) => {
       if(err){
-        res.json({error: err});
+        res.status(400).json({error: err});
       } else {
         res.json(itineraries);
       }
@@ -130,22 +130,22 @@ module.exports = {
             </html>
             `
 
-            // let mailOptions = {
-            //   from: '"Plan It Now" <planitnow@outlook.com>',
-            //   to: req.body.user.email,
-            //   subject: 'test bro',
-            //   text: 'waddup',
-            //   html: htmlFinal
-            // };
-            // transporter.sendMail(mailOptions, (err, info) => {
-            //   if(err) {
-            //     res.send({error: err})
-            //   } else {
-            //     console.log('email sent!');
-            //     res.send(itinerary);
-            //   }
-            // })
-            res.send(itinerary);
+            let mailOptions = {
+              from: '"Plan It Now" <planitnow@outlook.com>',
+              to: req.body.user.email,
+              subject: 'test bro',
+              text: 'waddup',
+              html: htmlFinal
+            };
+            transporter.sendMail(mailOptions, (err, info) => {
+              if(err) {
+                res.send({error: err})
+              } else {
+                console.log('email sent!');
+                res.send(itinerary);
+              }
+            })
+            //res.send(itinerary);
 
           }
         })
@@ -153,18 +153,24 @@ module.exports = {
     })
   },
   updateItinerary: (req, res) => {
-    Itinerary.findByIdAndUpdate(req.params.id, {
-      user: req.body.user._id,
-      days: req.body.days,
-      places: req.body.places,
-    }, {new: true},
-    (err, updatedItinerary) => {
-      if(err) {
-        res.send({error:err});
+    Itinerary.findById(req.params.id, (err,itinerary) => {
+      if (err) {
+        res.send({error:err})
       } else {
-        res.send(updatedItinerary);
+        itinerary.user = req.body.user._id || itinerary.user;
+        itinerary.days = req.body.days || itinerary.days;
+        itinerary.places = req.body.places || itinerary.places;
+
+        itinerary.save((err, updatedItinerary) => {
+          if(err) {
+            res.send({error:err});
+          } else {
+            res.send(updatedItinerary);
+          }
+        })
       }
     })
+
   },
   deleteItinerary: (req, res) => {
     Itinerary.findByIdAndRemove(req.params.id, (err, deletedItinerary) => {
