@@ -27,9 +27,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors());
 
 const db_config = {
-    test: "mongodb://localhost/planitnow-test",
-    development:"mongodb://localhost/planitnow",
-    production:"mongodb://localhost/planitnow-fix",
+   test: 'mongodb://localhost/planitnow-test',
+   development:`mongodb://planitnow:${process.env.PASSWORDATLAS}@planitnow-shard-00-00-ui5d8.mongodb.net:27017,planitnow-shard-00-01-ui5d8.mongodb.net:27017,planitnow-shard-00-02-ui5d8.mongodb.net:27017/planitnow-dev?ssl=true&replicaSet=planitnow-shard-0&authSource=admin`,
+   production:`mongodb://planitnow:${process.env.PASSWORDATLAS}@planitnow-shard-00-00-ui5d8.mongodb.net:27017,planitnow-shard-00-01-ui5d8.mongodb.net:27017,planitnow-shard-00-02-ui5d8.mongodb.net:27017/planitnow-prod?ssl=true&replicaSet=planitnow-shard-0&authSource=admin`,
 }
 
 // mongoose
@@ -37,7 +37,7 @@ mongoose.connect(db_config[app.settings.env], (err,res) => {
   if(err) {
     console.log('Error connecting to the database. '+err);
   } else {
-    console.log('connected to Database: '+db_config[app.settings.env]);
+    console.log('connected to Database: '+app.settings.env);
   }
 })
 mongoose.connection.on('connected', () => {
