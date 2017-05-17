@@ -81,6 +81,36 @@ describe('User Testing', () => {
     })
   })
 
+  it('should error if email is not filled when login', (done) => {
+    chai.request(server)
+    .post('/login')
+    .send({
+      password: '12345'
+    })
+    .end((err, res) => {
+      res.should.have.status(200);
+      res.body.should.have.property('error');
+      res.body.error.should.equal('user not found');
+      done()
+    })
+  })
+
+
+  it('should error if password is not filled when login', (done) => {
+    chai.request(server)
+    .post('/login')
+    .send({
+      email: 'anthony@juan.com',
+    })
+    .end((err, res) => {
+      res.should.have.status(200);
+      res.body.should.have.property('error');
+      res.body.error.should.equal('wrong password');
+      done()
+
+    })
+  })
+
   it('should return token after signup', (done) => {
     chai.request(server)
     .post('/signup')
@@ -93,6 +123,23 @@ describe('User Testing', () => {
       res.should.have.status(200);
       res.body.should.be.a('object');
       res.body.should.have.property('token');
+      done();
+    })
+  })
+
+
+  it('should return error if email already exist', (done) => {
+    chai.request(server)
+    .post('/signup')
+    .send({
+      name:'mantab soul',
+      email:'anthony@juan.com',
+      password: '11111'
+    })
+    .end((err,res) => {
+      res.should.have.status(200);
+      res.body.should.be.a('object');
+      res.body.should.have.property('error')
       done();
     })
   })

@@ -30,6 +30,7 @@ module.exports = {
   },
   getItineraryByUser: (req, res) => {
     Itinerary.find({user: req.params.id})
+    .sort({ createdAt: -1})
     .populate('places.place')
     .exec((err, itineraries) => {
       if(err){
@@ -130,7 +131,7 @@ module.exports = {
             `
 
             let mailOptions = {
-              from: '"Plan It Now" <anthonyjuanchristian@gmail.com>',
+              from: '"Plan It Now" <planitnow@outlook.com>',
               to: req.body.user.email,
               subject: 'test bro',
               text: 'waddup',

@@ -60,7 +60,7 @@ module.exports = {
         latitude: req.body.latitude,
         longitude: req.body.longitude
       },
-      detail_url: req.body.detail_url
+      details_url: req.body.details_url
     }, {new: true},
     (err, updatedPlace) => {
       if(err) {
@@ -81,7 +81,7 @@ module.exports = {
         latitude: req.body.latitude,
         longitude: req.body.longitude
       },
-      detail_url: req.body.detail_url
+      details_url: req.body.details_url
     })
 
     newPlace.save((err, place) => {

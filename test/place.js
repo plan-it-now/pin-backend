@@ -21,7 +21,7 @@ describe('Place Testing', () => {
         latitude: 6,
         longitude: 101
       },
-      detail_url: 'detail url'
+      details_url: 'detail url'
     })
 
     newPlace.save((err,user) => {
@@ -59,7 +59,7 @@ describe('Place Testing', () => {
       photo: 'foto gedung hacktiv',
       latitude: 6,
       longitude: 101,
-      detail_url: 'detail url'
+      details_url: 'detail url'
     })
     .end((err,res) => {
       res.should.have.status(200);
@@ -81,18 +81,122 @@ describe('Place Testing', () => {
       photo: 'foto gedung hacktiv',
       latitude: 6,
       longitude: 101,
-      detail_url: 'detail url'
+      details_url: 'detail url'
     })
     .end((err,res) => {
       console.log(res.body);
       res.should.have.status(200);
       res.body.should.be.a('object');
       res.body.should.have.property('error');
-      res.body.name.should.equal('Hacktiv888');
-      res.body.loc.longitude.should.equal(101);
       done();
     })
   })
+  it('should not create new place with no city defined', (done) => {
+    chai.request(server)
+    .post('/places')
+    .send({
+      name: 'Jakarta Selatan',
+      description: 'sebuah tempat wisata yang permai',
+      tag: 'Art',
+      photo: 'foto gedung hacktiv',
+      latitude: 6,
+      longitude: 101,
+      details_url: 'detail url'
+    })
+    .end((err,res) => {
+      console.log(res.body);
+      res.should.have.status(200);
+      res.body.should.be.a('object');
+      res.body.should.have.property('error');
+      done();
+    })
+  })
+
+  it('should not create new place with no description defined', (done) => {
+    chai.request(server)
+    .post('/places')
+    .send({
+      name: 'Jakarta Selatan',
+      city: 'Jakpus',
+      tag: 'Art',
+      photo: 'foto gedung hacktiv',
+      latitude: 6,
+      longitude: 101,
+      details_url: 'detail url'
+    })
+    .end((err,res) => {
+      console.log(res.body);
+      res.should.have.status(200);
+      res.body.should.be.a('object');
+      res.body.should.have.property('error');
+      done();
+    })
+  })
+
+  it('should not create new place with no tag defined', (done) => {
+    chai.request(server)
+    .post('/places')
+    .send({
+      name: 'Jakarta Selatan',
+      city: 'Jakpus',
+      description: 'Art',
+      photo: 'foto gedung hacktiv',
+      latitude: 6,
+      longitude: 101,
+      details_url: 'detail url'
+    })
+    .end((err,res) => {
+      console.log(res.body);
+      res.should.have.status(200);
+      res.body.should.be.a('object');
+      res.body.should.have.property('error');
+      done();
+    })
+  })
+
+  it('should not create new place with no photo defined', (done) => {
+    chai.request(server)
+    .post('/places')
+    .send({
+      name: 'Jakarta Selatan',
+      city: 'Jakpus',
+      description: 'Art',
+      tag: 'foto gedung hacktiv',
+      latitude: 6,
+      longitude: 101,
+      details_url: 'detail url'
+    })
+    .end((err,res) => {
+      console.log(res.body);
+      res.should.have.status(200);
+      res.body.should.be.a('object');
+      res.body.should.have.property('error');
+      done();
+    })
+  })
+
+  it('should not create new place with no details_url defined', (done) => {
+    chai.request(server)
+    .post('/places')
+    .send({
+      name: 'Jakarta Selatan',
+      city: 'Jakpus',
+      description: 'Art',
+      tag: 'foto gedung hacktiv',
+      latitude: 6,
+      longitude: 101,
+      photo: 'detail url'
+    })
+    .end((err,res) => {
+      console.log(res.body);
+      res.should.have.status(200);
+      res.body.should.be.a('object');
+      res.body.should.have.property('error');
+      done();
+    })
+  })
+
+
 
   it('should return deleted place', (done) => {
     chai.request(server)
@@ -117,7 +221,7 @@ describe('Place Testing', () => {
       photo: 'foto gedung hacktiv',
       latitude: 6,
       longitude: 101,
-      detail_url: 'detail url'
+      details_url: 'detail url'
     })
     .end((err,res) => {
       res.should.have.status(200);
