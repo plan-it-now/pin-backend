@@ -130,21 +130,23 @@ module.exports = {
             </html>
             `
 
-            let mailOptions = {
-              from: '"Plan It Now" <planitnow@outlook.com>',
-              to: req.body.user.email,
-              subject: 'test bro',
-              text: 'waddup',
-              html: htmlFinal
-            };
-            transporter.sendMail(mailOptions, (err, info) => {
-              if(err) {
-                res.send({error: err})
-              } else {
-                console.log('email sent!');
-                res.send(itinerary);
-              }
-            })
+            // let mailOptions = {
+            //   from: '"Plan It Now" <planitnow@outlook.com>',
+            //   to: req.body.user.email,
+            //   subject: 'test bro',
+            //   text: 'waddup',
+            //   html: htmlFinal
+            // };
+            // transporter.sendMail(mailOptions, (err, info) => {
+            //   if(err) {
+            //     res.send({error: err})
+            //   } else {
+            //     console.log('email sent!');
+            //     res.send(itinerary);
+            //   }
+            // })
+            res.send(itinerary);
+
           }
         })
       }
