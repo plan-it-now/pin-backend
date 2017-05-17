@@ -261,6 +261,28 @@ it('should not create new user if email is empty', (done) => {
   })
 })
 
+it('should not create new user if email is already exist', (done) => {
+  chai.request(server)
+  .post('/users')
+  .send({
+    email: 'anthony@juan.com',
+    password: '12345',
+    pref: {
+      history: 50,
+      nature: 50,
+      architecture: 50,
+      shopping: 50,
+      art: 50
+    }
+  })
+  .end((err,res) => {
+    res.should.have.status(200);
+    res.body.should.be.a('object');
+    res.body.should.have.property('error');
+    done();
+  })
+})
+
   it('should return updated user', (done) => {
     const newUser = new User({
       name: 'Anthony Chen',
@@ -350,6 +372,38 @@ it('should not create new user if email is empty', (done) => {
         res.body.should.be.a('object');
         res.body.should.not.have.property('error');
         res.body.email.should.equal('anthony777@juan.com');
+        done();
+      })
+    })
+
+  })
+
+  it('should not update user if email is already exist', (done) => {
+    const newUser = new User({
+      name: 'Anthony Chen',
+      email: 'anthony777@juan.com',
+      password: '12345',
+      pref: {
+        history: 50,
+        nature: 50,
+        architecture: 50,
+        shopping: 50,
+        art: 50
+      }
+    })
+
+    newUser.save((err,user) => {
+      chai.request(server)
+      .put('/users/'+user._id)
+      .send({
+        email: 'anthony@juan.com',
+      })
+      .end((err,res) => {
+        // console.log(res.body);
+        res.should.have.status(200);
+        res.body.should.be.a('object');
+        res.body.should.have.property('error');
+        res.body.error.name.should.equal('ValidationError');
         done();
       })
     })
