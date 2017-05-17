@@ -292,21 +292,6 @@ it('should not create new user if email is empty', (done) => {
 
   })
 
-  it('shouldnot return user when decode with invalid token', (done) => {
-      chai.request(server)
-      .get('/users/userdata/')
-      .set('token','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFzdGFnYUBqdWFuLmNvbSIsImlhdCI6MTQ5NDkyMjY1N30.WjjjZytcM8vTfuXp-3E3Bk-WworxEC70praWD3oux6c')
-      .end((err,res) => {
-        console.log(res.body);
-        res.should.have.status(200);
-        res.body.should.be.a('object');
-        res.body.should.have.property('error');
-        res.body.error.should.equal('user not found')
-        done();
-      })
-
-  })
-
 
   it('should not update user if email is empty', (done) => {
     const newUser = new User({
