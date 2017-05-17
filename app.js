@@ -28,12 +28,12 @@ app.use(cors());
 
 const db_config = {
    test: 'mongodb://localhost/planitnow-test',
-   development:'mongodb://planitnow:planit123@planitnow-shard-00-00-ui5d8.mongodb.net:27017,planitnow-shard-00-01-ui5d8.mongodb.net:27017,planitnow-shard-00-02-ui5d8.mongodb.net:27017/planitnow-dev?ssl=true&replicaSet=planitnow-shard-0&authSource=admin',
-   production:'mongodb://planitnow:planit123@planitnow-shard-00-00-ui5d8.mongodb.net:27017,planitnow-shard-00-01-ui5d8.mongodb.net:27017,planitnow-shard-00-02-ui5d8.mongodb.net:27017/planitnow-prod?ssl=true&replicaSet=planitnow-shard-0&authSource=admin',
+   development:`mongodb://planitnow:${process.env.PASSWORDATLAS}@planitnow-shard-00-00-ui5d8.mongodb.net:27017,planitnow-shard-00-01-ui5d8.mongodb.net:27017,planitnow-shard-00-02-ui5d8.mongodb.net:27017/planitnow-dev?ssl=true&replicaSet=planitnow-shard-0&authSource=admin`,
+   production:`mongodb://planitnow:${process.env.PASSWORDATLAS}@planitnow-shard-00-00-ui5d8.mongodb.net:27017,planitnow-shard-00-01-ui5d8.mongodb.net:27017,planitnow-shard-00-02-ui5d8.mongodb.net:27017/planitnow-prod?ssl=true&replicaSet=planitnow-shard-0&authSource=admin`,
 }
 
 // mongoose
-mongoose.connect(db_config['production'], (err,res) => {
+mongoose.connect(db_config[app.settings.env], (err,res) => {
   if(err) {
     console.log('Error connecting to the database. '+err);
   } else {
