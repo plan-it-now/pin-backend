@@ -33,11 +33,11 @@ const db_config = {
 }
 
 // mongoose
-mongoose.connect(db_config[app.settings.env], (err,res) => {
+mongoose.connect(db_config['production'], (err,res) => {
   if(err) {
     console.log('Error connecting to the database. '+err);
   } else {
-    console.log('connected to Database: '+db_config[app.settings.env]);
+    console.log('connected to Database: '+app.settings.env);
   }
 })
 mongoose.connection.on('connected', () => {
