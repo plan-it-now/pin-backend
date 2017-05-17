@@ -84,7 +84,7 @@ describe('Place Testing', () => {
       details_url: 'detail url'
     })
     .end((err,res) => {
-      console.log(res.body);
+
       res.should.have.status(200);
       res.body.should.be.a('object');
       res.body.should.have.property('error');
@@ -104,7 +104,7 @@ describe('Place Testing', () => {
       details_url: 'detail url'
     })
     .end((err,res) => {
-      console.log(res.body);
+
       res.should.have.status(200);
       res.body.should.be.a('object');
       res.body.should.have.property('error');
@@ -125,7 +125,7 @@ describe('Place Testing', () => {
       details_url: 'detail url'
     })
     .end((err,res) => {
-      console.log(res.body);
+
       res.should.have.status(200);
       res.body.should.be.a('object');
       res.body.should.have.property('error');
@@ -146,7 +146,7 @@ describe('Place Testing', () => {
       details_url: 'detail url'
     })
     .end((err,res) => {
-      console.log(res.body);
+
       res.should.have.status(200);
       res.body.should.be.a('object');
       res.body.should.have.property('error');
@@ -167,7 +167,7 @@ describe('Place Testing', () => {
       details_url: 'detail url'
     })
     .end((err,res) => {
-      console.log(res.body);
+
       res.should.have.status(200);
       res.body.should.be.a('object');
       res.body.should.have.property('error');
@@ -188,7 +188,7 @@ describe('Place Testing', () => {
       photo: 'detail url'
     })
     .end((err,res) => {
-      console.log(res.body);
+
       res.should.have.status(200);
       res.body.should.be.a('object');
       res.body.should.have.property('error');

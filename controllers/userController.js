@@ -163,11 +163,13 @@ module.exports = {
     jwt.verify(req.headers.token, process.env.SECRET_KEY, (err, decoded) => {
       if(decoded) {
         User.findOne({email: decoded.email}, (err, user) => {
-          if(err || user == null) {
+          if(err) {
             res.send({error:err});
-          } else {
+          } else if(user) {
             user.password = null
             res.send(user);
+          } else {
+            res.send({error: 'user not found'})
           }
         })
       } else {
