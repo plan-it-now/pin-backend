@@ -3,13 +3,15 @@
 var express = require('express');
 var router = express.Router();
 var user = require('../controllers/userController');
+var helper = require('../helper/authJWT');
+
 /* GET users listing. */
-router.get('/', user.getAllUsers);
+router.get('/', helper.verify, user.getAllUsers);
 router.get('/userdata', user.decodedUser)
-router.get('/:id', user.getUserById)
+router.get('/:id',helper.verify, user.getUserById)
 router.post('/', user.postUser)
-router.put('/:id', user.updateUser)
-router.delete('/:id', user.deleteUser)
+router.put('/:id',helper.verify, user.updateUser)
+router.delete('/:id', helper.verify, user.deleteUser)
 
 
 

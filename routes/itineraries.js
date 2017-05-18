@@ -2,20 +2,21 @@
 
 var express = require('express');
 var router = express.Router();
+var helper = require('../helper/authJWT');
 
 var itinerary = require('../controllers/itineraryController');
 
-router.get('/', itinerary.getAllItinerary);
+router.get('/', helper.verify, itinerary.getAllItinerary);
 
-router.get('/user/:id', itinerary.getItineraryByUser);
+router.get('/user/:id', helper.verify, itinerary.getItineraryByUser);
 
-router.get('/:id', itinerary.getItineraryById);
+router.get('/:id', helper.verify, itinerary.getItineraryById);
 
-router.post('/', itinerary.postItinerary);
+router.post('/', helper.verify, itinerary.postItinerary);
 
-router.put('/:id', itinerary.updateItinerary);
+router.put('/:id', helper.verify, itinerary.updateItinerary);
 
-router.delete('/:id', itinerary.deleteItinerary);
+router.delete('/:id', helper.verify, itinerary.deleteItinerary);
 
 
 module.exports = router;
