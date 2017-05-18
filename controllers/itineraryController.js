@@ -100,6 +100,7 @@ module.exports = {
                 </table>
               `
             })
+
             const htmlFinal = `
             <html>
             <head>
@@ -114,8 +115,6 @@ module.exports = {
               padding: 8px;
             }
 
-            tr:nth-child(even){background-color: #f2f2f2}
-
             th {
               background-color: #5E35B1;
               color: white;
@@ -124,30 +123,38 @@ module.exports = {
             </head>
             <body>
 
-            <h2>Plan It Now ! Trip To ${orderedPlaces[0][0].place.city}</h2>
+            <h1>Hi, ${req.body.user.name}!/h1>
+            <h3>Here is your Itinerary for ${itinerary.days} Days Trip To ${orderedPlaces[0][0].place.city}</h3>
             ${htmlCanggih}
+            <br>
+            <br>
+
+            <h3>Have a nice trip,</h3>
+            <br>
+            <br>
+            <h3><b>Plan It Now Team</b></h3>
             </body>
             </html>
             `
             // PRODUCTION
-            // let mailOptions = {
-            //   from: '"Plan It Now" <planitnow@outlook.com>',
-            //   to: req.body.user.email,
-            //   subject: 'test bro',
-            //   text: 'waddup',
-            //   html: htmlFinal
-            // };
-            // transporter.sendMail(mailOptions, (err, info) => {
-            //   if(err) {
-            //     res.send({error: err})
-            //   } else {
-            //     console.log('email sent!');
-            //     res.send(itinerary);
-            //   }
-            // })
+            let mailOptions = {
+              from: '"Plan It Now" <planitnow@outlook.com>',
+              to: req.body.user.email,
+              subject: 'test bro',
+              text: 'waddup',
+              html: htmlFinal
+            };
+            transporter.sendMail(mailOptions, (err, info) => {
+              if(err) {
+                res.send({error: err})
+              } else {
+                console.log('email sent!');
+                res.send(itinerary);
+              }
+            })
 
             // DEVELOPMENT
-            res.send(itinerary);
+            // res.send(itinerary);
 
           }
         })
