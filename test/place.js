@@ -4,30 +4,54 @@ const chai = require('chai'),
       // monggo = require('mongoose'),
       should = chai.should(),
       Place = require('../models/place'),
-      server = require('../app')
+      User = require('../models/user'),
+      server = require('../app'),
+      pwh = require('password-hash'),
+      jwt = require('jsonwebtoken');
 
 chai.use(chaiHTTP);
 
 describe('Place Testing', () => {
   let currentData;
+  let token;
   beforeEach((done) => {
-    const newPlace = new Place({
-      name: 'Hacktiv8',
-      city: 'Jakarta Selatan',
-      description: 'sebuah tempat wisata yang permai',
-      tag: 'Art',
-      photo: 'foto gedung hacktiv',
-      loc: {
-        latitude: 6,
-        longitude: 101
-      },
-      details_url: 'detail url'
+    //token dummy for testing
+    token = generateTokenDummy();
+
+    const newUser = new User({
+      name: 'Anthony',
+      email: 'anthony@juan.com',
+      password: pwh.generate('12345'),
+      pref: {
+        history: 50,
+        nature: 50,
+        architecture: 50,
+        shopping: 50,
+        art: 50
+      }
+    })
+    newUser.save((err,user) => {
+
+      const newPlace = new Place({
+        name: 'Hacktiv8',
+        city: 'Jakarta Selatan',
+        description: 'sebuah tempat wisata yang permai',
+        tag: 'Art',
+        photo: 'foto gedung hacktiv',
+        loc: {
+          latitude: 6,
+          longitude: 101
+        },
+        details_url: 'detail url'
+      })
+
+      newPlace.save((err,place) => {
+        currentData = place;
+        done()
+      })
+
     })
 
-    newPlace.save((err,user) => {
-      currentData = user;
-      done()
-    })
   })
 
   afterEach((done) => {
@@ -39,6 +63,7 @@ describe('Place Testing', () => {
   it('should return all places', (done) => {
     chai.request(server)
     .get('/places')
+    .set('token', token)
     .end((err, res) => {
       res.should.have.status(200);
       res.body.should.be.a('array');
@@ -48,9 +73,22 @@ describe('Place Testing', () => {
     })
   })
 
+  it('should not return all places if no token was defined', (done) => {
+    chai.request(server)
+    .get('/places')
+    .end((err, res) => {
+      res.should.have.status(200);
+      res.body.should.have.property('error');
+      res.body.error.name.should.equal('JsonWebTokenError');
+      res.body.error.message.should.equal('jwt must be provided');
+      done();
+    })
+  })
+
   it('should return the new posted place', (done) => {
     chai.request(server)
     .post('/places')
+    .set('token', token)
     .send({
       name: 'Hacktiv888',
       city: 'Jakarta Selatan',
@@ -71,9 +109,33 @@ describe('Place Testing', () => {
     })
   })
 
+  it('should not create new place if no token was defined', (done) => {
+    chai.request(server)
+    .post('/places')
+    .send({
+      name: 'Hacktiv888',
+      city: 'Jakarta Selatan',
+      description: 'sebuah tempat wisata yang permai',
+      tag: 'Art',
+      photo: 'foto gedung hacktiv',
+      latitude: 6,
+      longitude: 101,
+      details_url: 'detail url'
+    })
+    .end((err,res) => {
+      res.should.have.status(200);
+      res.body.should.have.property('error');
+      res.body.error.name.should.equal('JsonWebTokenError');
+      res.body.error.message.should.equal('jwt must be provided');
+      done();
+    })
+  })
+
+
   it('should not create new place with no name defined', (done) => {
     chai.request(server)
     .post('/places')
+    .set('token', token)
     .send({
       city: 'Jakarta Selatan',
       description: 'sebuah tempat wisata yang permai',
@@ -94,6 +156,7 @@ describe('Place Testing', () => {
   it('should not create new place with no city defined', (done) => {
     chai.request(server)
     .post('/places')
+    .set('token', token)
     .send({
       name: 'Jakarta Selatan',
       description: 'sebuah tempat wisata yang permai',
@@ -115,6 +178,7 @@ describe('Place Testing', () => {
   it('should not create new place with no description defined', (done) => {
     chai.request(server)
     .post('/places')
+    .set('token', token)
     .send({
       name: 'Jakarta Selatan',
       city: 'Jakpus',
@@ -136,6 +200,7 @@ describe('Place Testing', () => {
   it('should not create new place with no tag defined', (done) => {
     chai.request(server)
     .post('/places')
+    .set('token', token)
     .send({
       name: 'Jakarta Selatan',
       city: 'Jakpus',
@@ -157,6 +222,7 @@ describe('Place Testing', () => {
   it('should not create new place with no photo defined', (done) => {
     chai.request(server)
     .post('/places')
+    .set('token', token)
     .send({
       name: 'Jakarta Selatan',
       city: 'Jakpus',
@@ -178,6 +244,7 @@ describe('Place Testing', () => {
   it('should not create new place with no details_url defined', (done) => {
     chai.request(server)
     .post('/places')
+    .set('token', token)
     .send({
       name: 'Jakarta Selatan',
       city: 'Jakpus',
@@ -201,6 +268,7 @@ describe('Place Testing', () => {
   it('should return deleted place', (done) => {
     chai.request(server)
     .delete('/places/'+currentData._id)
+    .set('token', token)
     .end((err, res) => {
       res.should.have.status(200);
       res.body.should.be.a('object');
@@ -210,9 +278,22 @@ describe('Place Testing', () => {
     })
   })
 
+  it('should not delete place if no token was defined', (done) => {
+    chai.request(server)
+    .delete('/places/'+currentData._id)
+    .end((err, res) => {
+      res.should.have.status(200);
+      res.body.should.have.property('error');
+      res.body.error.name.should.equal('JsonWebTokenError');
+      res.body.error.message.should.equal('jwt must be provided');
+      done();
+    })
+  })
+
   it('should return updated place', (done) => {
     chai.request(server)
     .put('/places/'+currentData._id)
+    .set('token', token)
     .send({
       name: 'Hacktiv666',
       city: 'Jakarta Selatan',
@@ -233,9 +314,33 @@ describe('Place Testing', () => {
     })
   })
 
+  it('should not update place if no token was defined', (done) => {
+    chai.request(server)
+    .put('/places/'+currentData._id)
+    .send({
+      name: 'Hacktiv666',
+      city: 'Jakarta Selatan',
+      description: 'sebuah tempat wisata yang permai',
+      tag: 'Art',
+      photo: 'foto gedung hacktiv',
+      latitude: 6,
+      longitude: 101,
+      details_url: 'detail url'
+    })
+    .end((err,res) => {
+      res.should.have.status(200);
+      res.body.should.have.property('error');
+      res.body.error.name.should.equal('JsonWebTokenError');
+      res.body.error.message.should.equal('jwt must be provided');
+      done();
+    })
+  })
+
+
   it('should not updated place if name is empty', (done)  => {
     chai.request(server)
     .put('/places/'+currentData._id)
+    .set('token', token)
     .send({
       name: '',
       city: 'Jakarta Selatan',
@@ -247,7 +352,7 @@ describe('Place Testing', () => {
       details_url: 'detail url'
     })
     .end((err,res) => {
-      
+
       res.should.have.status(200);
       res.body.should.be.a('object');
       res.body.name.should.equal('Hacktiv8');
@@ -258,6 +363,7 @@ describe('Place Testing', () => {
     it('should not updated place if city is empty', (done)  => {
       chai.request(server)
       .put('/places/'+currentData._id)
+      .set('token', token)
       .send({
         name: 'Hacktiv8',
         city: '',
@@ -280,6 +386,7 @@ describe('Place Testing', () => {
     it('should not updated place if description is empty', (done)  => {
       chai.request(server)
       .put('/places/'+currentData._id)
+      .set('token', token)
       .send({
         name: 'Hacktiv8',
         city: 'Jakarta Selatan',
@@ -302,6 +409,7 @@ describe('Place Testing', () => {
     it('should not updated place if tag is empty', (done)  => {
       chai.request(server)
       .put('/places/'+currentData._id)
+      .set('token', token)
       .send({
         name: 'Hacktiv8',
         city: 'Jakarta Selatan',
@@ -324,6 +432,7 @@ describe('Place Testing', () => {
     it('should not updated place if photo is empty', (done)  => {
       chai.request(server)
       .put('/places/'+currentData._id)
+      .set('token', token)
       .send({
         name: 'Hacktiv8',
         city: 'Jakarta Selatan',
@@ -346,6 +455,7 @@ describe('Place Testing', () => {
     it('should not updated place if latitude is empty', (done)  => {
       chai.request(server)
       .put('/places/'+currentData._id)
+      .set('token', token)
       .send({
         name: 'Hacktiv8',
         city: 'Jakarta Selatan',
@@ -367,6 +477,7 @@ describe('Place Testing', () => {
     it('should not updated place if longitude is empty', (done)  => {
       chai.request(server)
       .put('/places/'+currentData._id)
+      .set('token', token)
       .send({
         name: 'Hacktiv8',
         city: 'Jakarta Selatan',
@@ -388,6 +499,7 @@ describe('Place Testing', () => {
     it('should not updated place if details_url is empty', (done)  => {
       chai.request(server)
       .put('/places/'+currentData._id)
+      .set('token', token)
       .send({
         name: 'Hacktiv8',
         city: 'Jakarta Selatan',
@@ -406,5 +518,12 @@ describe('Place Testing', () => {
         done();
       })
     })
+
+    function generateTokenDummy(){
+      return jwt.sign({
+        name: 'Anthony',
+        email: 'anthony@juan.com'
+      }, process.env.SECRET_KEY);
+    }
 
 })

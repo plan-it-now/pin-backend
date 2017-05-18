@@ -7,14 +7,18 @@ const chai = require('chai'),
       should = chai.should(),
       pwh = require('password-hash'),
       User = require('../models/user'),
-      server = require('../app')
+      server = require('../app'),
+      jwt = require('jsonwebtoken');
 
 chai.use(chaiHTTP);
 
 
 describe('User Testing', () => {
   let currentData;
+  let token;
   beforeEach((done) => {
+    //token dummy for testing
+    token = generateTokenDummy();
     const newUser = new User({
       name: 'Anthony',
       email: 'anthony@juan.com',
@@ -58,10 +62,23 @@ describe('User Testing', () => {
   it('should return all users', (done) => {
     chai.request(server)
     .get('/users')
+    .set('token', token)
     .end((err,res) => {
       res.should.have.status(200);
       res.body.should.be.a('array');
       res.body.length.should.equal(2);
+      done();
+    })
+  })
+
+  it('should not return all users if no token is defined', (done) => {
+    chai.request(server)
+    .get('/users')
+    .end((err,res) => {
+      res.should.have.status(200);
+      res.body.should.have.property('error');
+      res.body.error.name.should.equal('JsonWebTokenError');
+      res.body.error.message.should.equal('jwt must be provided');
       done();
     })
   })
@@ -261,7 +278,61 @@ it('should not create new user if email is empty', (done) => {
   })
 })
 
+it('should not create new user if email is already exist', (done) => {
+  chai.request(server)
+  .post('/users')
+  .send({
+    email: 'anthony@juan.com',
+    password: '12345',
+    pref: {
+      history: 50,
+      nature: 50,
+      architecture: 50,
+      shopping: 50,
+      art: 50
+    }
+  })
+  .end((err,res) => {
+    res.should.have.status(200);
+    res.body.should.be.a('object');
+    res.body.should.have.property('error');
+    done();
+  })
+})
+
   it('should return updated user', (done) => {
+    const newUser = new User({
+      name: 'Anthony Chen',
+      email: 'anthony777@juan.com',
+      password: '12345',
+      pref: {
+        history: 50,
+        nature: 50,
+        architecture: 50,
+        shopping: 50,
+        art: 50
+      }
+    })
+
+    newUser.save((err,user) => {
+      chai.request(server)
+      .put('/users/'+user._id)
+      .send({
+        name: 'Jackie Chen',
+      })
+      .set('token', token)
+      .end((err,res) => {
+        res.should.have.status(200);
+        res.body.should.be.a('object');
+        res.body.should.not.have.property('error');
+        res.body.name.should.equal('Jackie Chen');
+        done();
+      })
+    })
+
+  })
+
+  it('should not update user if not token was defined', (done) => {
     const newUser = new User({
       name: 'Anthony Chen',
       email: 'anthony777@juan.com',
@@ -283,14 +354,16 @@ it('should not create new user if email is empty', (done) => {
       })
       .end((err,res) => {
         res.should.have.status(200);
-        res.body.should.be.a('object');
-        res.body.should.not.have.property('error');
-        res.body.name.should.equal('Jackie Chen');
+        res.body.should.have.property('error');
+        res.body.error.name.should.equal('JsonWebTokenError');
+        res.body.error.message.should.equal('jwt must be provided');
         done();
       })
     })
 
   })
+
+
 
   it('should not update user if name is empty', (done) => {
     const newUser = new User({
@@ -312,6 +385,7 @@ it('should not create new user if email is empty', (done) => {
       .send({
         name: '',
       })
+      .set('token', token)
       .end((err,res) => {
         res.should.have.status(200);
         res.body.should.be.a('object');
@@ -344,6 +418,7 @@ it('should not create new user if email is empty', (done) => {
       .send({
         email: '',
       })
+      .set('token', token)
       .end((err,res) => {
         // console.log(res.body);
         res.should.have.status(200);
@@ -356,9 +431,43 @@ it('should not create new user if email is empty', (done) => {
 
   })
 
+  it('should not update user if email is already exist', (done) => {
+    const newUser = new User({
+      name: 'Anthony Chen',
+      email: 'anthony777@juan.com',
+      password: '12345',
+      pref: {
+        history: 50,
+        nature: 50,
+        architecture: 50,
+        shopping: 50,
+        art: 50
+      }
+    })
+
+    newUser.save((err,user) => {
+      chai.request(server)
+      .put('/users/'+user._id)
+      .send({
+        email: 'anthony@juan.com',
+      })
+      .set('token', token)
+      .end((err,res) => {
+        // console.log(res.body);
+        res.should.have.status(200);
+        res.body.should.be.a('object');
+        res.body.should.have.property('error');
+        res.body.error.name.should.equal('ValidationError');
+        done();
+      })
+    })
+
+  })
+
   it('should return deleted user', (done) => {
     chai.request(server)
     .delete('/users/'+currentData._id)
+    .set('token', token)
     .end((err,res) => {
       res.should.have.status(200);
       res.body.should.be.a('object');
@@ -367,5 +476,27 @@ it('should not create new user if email is empty', (done) => {
     })
 
   })
+
+  it('should not delete user if not token was defined', (done) => {
+    chai.request(server)
+    .delete('/users/'+currentData._id)
+    .end((err,res) => {
+      res.should.have.status(200);
+      res.body.should.have.property('error');
+      res.body.error.name.should.equal('JsonWebTokenError');
+      res.body.error.message.should.equal('jwt must be provided');
+      done();
+    })
+
+  })
+
+
+
+  function generateTokenDummy(){
+    return jwt.sign({
+      name: 'Anthony',
+      email: 'anthony@juan.com'
+    }, process.env.SECRET_KEY);
+  }
 
 })

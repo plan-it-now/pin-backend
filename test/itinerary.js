@@ -8,7 +8,9 @@ const chai = require('chai'),
       User = require('../models/user'),
       Place = require('../models/place'),
       Itinerary = require('../models/itinerary'),
-      server = require('../app')
+      server = require('../app'),
+      pwh = require('password-hash'),
+      jwt = require('jsonwebtoken');
 
 chai.use(chaiHTTP);
 
@@ -17,11 +19,14 @@ describe('Itinerary Testing', () => {
   let currentUser;
   let currentPlace;
   let currentItinerary;
+  let token;
   beforeEach((done) => {
+    //token dummy for testing
+    token = generateTokenDummy();
     const newUser = new User({
       name: 'Anthony',
-      email: 'anthonyjuan95@gmail.com',
-      password: '12345',
+      email: 'anthony@juan.com',
+      password: pwh.generate('12345'),
       pref: {
         history: 50,
         nature: 50,
@@ -92,6 +97,7 @@ describe('Itinerary Testing', () => {
   it('should return all itineraries', (done) => {
     chai.request(server)
     .get('/itineraries')
+    .set('token', token)
     .end((err,res) => {
       res.should.have.status(200);
       res.body.should.be.a('array');
@@ -100,9 +106,23 @@ describe('Itinerary Testing', () => {
     })
   })
 
+  it('should not return all itineraries if no token was defined', (done) => {
+    chai.request(server)
+    .get('/itineraries')
+    .end((err,res) => {
+      res.should.have.status(200);
+      res.body.should.have.property('error');
+      res.body.error.name.should.equal('JsonWebTokenError');
+      res.body.error.message.should.equal('jwt must be provided');
+      done();
+    })
+  })
+
+
   it('should return all itineraries user', (done) => {
     chai.request(server)
     .get('/itineraries/user/'+currentUser._id)
+    .set('token', token)
     .end((err,res) => {
       // console.log('===',res.body[0].places[0].place);
       res.should.have.status(200);
@@ -111,6 +131,20 @@ describe('Itinerary Testing', () => {
       done();
     })
   })
+
+  it('should not return all itineraries by user if no token was defined', (done) => {
+    chai.request(server)
+    .get('/itineraries/user/'+currentUser._id)
+    .end((err,res) => {
+      // console.log('===',res.body[0].places[0].place);
+      res.should.have.status(200);
+      res.body.should.have.property('error');
+      res.body.error.name.should.equal('JsonWebTokenError');
+      res.body.error.message.should.equal('jwt must be provided');
+      done();
+    })
+  })
+
 
   // it('should return itinerary that have been posted and send email', function(done) {
   //   this.timeout(10000);
@@ -151,6 +185,7 @@ describe('Itinerary Testing', () => {
     newItinerary.save((err,itinerary) => {
       chai.request(server)
       .put('/itineraries/'+itinerary._id)
+      .set('token', token)
       .send({
         user: currentUser,
         days: 2,
@@ -173,6 +208,43 @@ describe('Itinerary Testing', () => {
 
   })
 
+  it('should not update itinerary if no token was defined', (done) => {
+    const newItinerary = new Itinerary({
+      user: currentUser._id,
+      days: 2,
+      places: [{
+        place: currentPlace._id,
+        schedule: '11.00-12.00',
+        day: 1,
+        sequence: 2
+      }]
+    })
+
+    newItinerary.save((err,itinerary) => {
+      chai.request(server)
+      .put('/itineraries/'+itinerary._id)
+      .send({
+        user: currentUser,
+        days: 2,
+        places: [{
+          place: currentPlace._id,
+          schedule: '12.00-13.00',
+          day: 2,
+          sequence: 3
+        }]
+      })
+      .end((err,res) => {
+        // console.log(res.body);
+        res.should.have.status(200);
+        res.body.should.have.property('error');
+        res.body.error.name.should.equal('JsonWebTokenError');
+        res.body.error.message.should.equal('jwt must be provided');
+        done();
+      })
+    })
+  })
+
+
   it('should not update itinerary if user is not filled', (done) => {
     const newItinerary = new Itinerary({
       user: currentUser._id,
@@ -188,6 +260,7 @@ describe('Itinerary Testing', () => {
     newItinerary.save((err,itinerary) => {
       chai.request(server)
       .put('/itineraries/'+itinerary._id)
+      .set('token', token)
       .send({
         user: '',
         days: 2,
@@ -225,6 +298,7 @@ describe('Itinerary Testing', () => {
     newItinerary.save((err,itinerary) => {
       chai.request(server)
       .put('/itineraries/'+itinerary._id)
+      .set('token', token)
       .send({
         user: currentUser._id,
         places: [{
@@ -261,6 +335,7 @@ describe('Itinerary Testing', () => {
     newItinerary.save((err,itinerary) => {
       chai.request(server)
       .put('/itineraries/'+itinerary._id)
+      .set('token', token)
       .send({
         user: currentUser._id,
         days: 2
@@ -280,6 +355,7 @@ describe('Itinerary Testing', () => {
   it('should return deleted itinerary', (done) => {
     chai.request(server)
     .delete('/itineraries/'+currentItinerary._id)
+    .set('token', token)
     .end((err,res) => {
       res.should.have.status(200);
       res.body.should.be.a('object');
@@ -289,5 +365,25 @@ describe('Itinerary Testing', () => {
 
   })
 
+  it('should note delete itinerary if no token was defined', (done) => {
+    chai.request(server)
+    .delete('/itineraries/'+currentItinerary._id)
+    .end((err,res) => {
+      res.should.have.status(200);
+      res.body.should.have.property('error');
+      res.body.error.name.should.equal('JsonWebTokenError');
+      res.body.error.message.should.equal('jwt must be provided');
+      done();
+    })
+
+  })
+
+
+  function generateTokenDummy(){
+    return jwt.sign({
+      name: 'Anthony',
+      email: 'anthony@juan.com'
+    }, process.env.SECRET_KEY);
+  }
 
 })
