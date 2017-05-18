@@ -88,7 +88,7 @@ module.exports = {
                 `
               })
               htmlCanggih += `
-                <h1>Day ${idx+1}</h1>
+                <h2>Day ${idx+1}</h2>
                 <table>
                   <tr>
                     <th>No</th>
@@ -123,7 +123,7 @@ module.exports = {
             </head>
             <body>
 
-            <h1>Hi, ${req.body.user.name}!/h1>
+            <h1>Hi, ${req.body.user.name}!</h1>
             <h3>Here is your Itinerary for ${itinerary.days} Days Trip To ${orderedPlaces[0][0].place.city}</h3>
             ${htmlCanggih}
             <br>
@@ -140,8 +140,8 @@ module.exports = {
             let mailOptions = {
               from: '"Plan It Now" <planitnow@outlook.com>',
               to: req.body.user.email,
-              subject: 'test bro',
-              text: 'waddup',
+              subject: `${orderedPlaces[0][0].place.city} Itinerary`,
+              text: 'Plan It Now',
               html: htmlFinal
             };
             transporter.sendMail(mailOptions, (err, info) => {
